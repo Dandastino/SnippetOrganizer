@@ -90,13 +90,8 @@ public class SnippetManager {
      */
     public void addSnippet(String title, String language, String code) {
         try {
-            // Create new snippet
             Snippet newSnippet = SnippetFactory.createSnippet(getNextId(), title, language, code);
-            
-            // Add to collection
             snippetCollection.addSnippet(newSnippet);
-            
-            // Save to file
             saveSnippets();
             
             SnippetLogger.logInfo("Added new snippet: " + title);
@@ -112,7 +107,7 @@ public class SnippetManager {
      */
     public void searchSnippets(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            throw new SnippetException("Search keyword cannot be empty");
+            throw new SnippetException("Please provide a valid value for searching.");
         }
 
         SnippetIterator iterator = new SnippetIterator(snippetCollection.getSnippets());
