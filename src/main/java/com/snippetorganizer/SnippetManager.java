@@ -49,6 +49,26 @@ public class SnippetManager {
     }
 
     /*
+     * Shows the user all the snippet.
+     */ 
+    public void listSnippets() {
+        List<Snippet> snippets = getAllSnippets();
+        if (snippets.isEmpty()) {
+            System.out.println("No snippets available.");
+            return;
+        }
+
+        for (Snippet snippet : snippets) {
+            System.out.println("ID: " + snippet.getId());
+            System.out.println("Title: " + snippet.getTitle());
+            System.out.println("Language: " + snippet.getLanguage());
+            System.out.println("Code:\n" + snippet.getCode());
+            System.out.println("---------------------------");
+        }
+    }
+
+
+    /*
      * Loads snippets from the JSON file into the snippet collection.
      * If the file does not exist or is empty, it initializes an empty collection.
      */
@@ -120,7 +140,11 @@ public class SnippetManager {
                 snippet.getLanguage().toLowerCase().contains(keyword.toLowerCase())) {
                 
                 System.out.println("\nFound snippet:");
-                System.out.println(snippet);
+                System.out.println("ID: " + snippet.getId());
+                System.out.println("Title: " + snippet.getTitle());
+                System.out.println("Language: " + snippet.getLanguage());
+                System.out.println("Code:\n" + snippet.getCode());
+                System.out.println("---------------------------");
                 found = true;
             }
         }
@@ -129,6 +153,7 @@ public class SnippetManager {
             System.out.println("No snippets found containing: " + keyword);
         }
     }
+
 
     /*
      * Edits an existing snippet in the collection.

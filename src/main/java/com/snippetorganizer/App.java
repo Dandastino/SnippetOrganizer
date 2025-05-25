@@ -65,6 +65,7 @@ public class App {
                         }
                         case 3 -> {
                             try {
+                                manager.listSnippets();
                                 System.out.print("Enter snippet ID to edit: ");
                                 int snippetId = getValidIntInput(scanner, "Snippet ID");
 
@@ -93,6 +94,7 @@ public class App {
                         }
                         case 4 -> {
                             try {
+                                manager.listSnippets();
                                 System.out.print("Enter snippet ID to delete: ");
                                 int snippetId = getValidIntInput(scanner, "Snippet ID");
                                 manager.deleteSnippet(snippetId);
