@@ -3,8 +3,6 @@ package com.snippetorganizer;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -29,16 +27,13 @@ public class SnippetManager {
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.snippetCollection = new SnippetCollection("Main Collection");
         
-        // Clear files on startup
         try {
-            // Clear snippets.json
             if (file.exists()) {
                 file.delete();
             }
             file.createNewFile();
             objectMapper.writeValue(file, new Snippet[0]);
             
-            // Clear log file
             File logFile = new File("snippet_organizer.log");
             if (logFile.exists()) {
                 logFile.delete();
@@ -61,14 +56,12 @@ public class SnippetManager {
         if (file.exists() && file.length() > 0) {
             try {
                 Snippet[] snippets = objectMapper.readValue(file, Snippet[].class);
-                // Clear the collection first
                 snippetCollection.getSnippets().clear();
-                // Add all loaded snippets
                 for (Snippet snippet : snippets) {
                     snippetCollection.addSnippet(snippet);
                 }
                 System.out.println("Successfully loaded " + snippets.length + " snippets from file.");
-            } catch (Exception e) {
+            } catch (IOException e) {
                 System.err.println("Warning: Error reading snippets file: " + e.getMessage());
             }
         }
@@ -210,10 +203,8 @@ public class SnippetManager {
     */
     private void saveSnippets() {
         try {
-            // Get all snippets from the collection
             List<Snippet> allSnippets = snippetCollection.getSnippets();
             
-            // Save to file
             objectMapper.writeValue(file, allSnippets);
         } catch (IOException e) {
             SnippetLogger.logError("Error saving snippets", e);

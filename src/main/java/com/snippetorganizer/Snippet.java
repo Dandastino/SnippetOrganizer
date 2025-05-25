@@ -110,9 +110,6 @@ public final class Snippet {
             Snippet ID: %d
             Title: %s
             Language: %s
-            Category: %s
-            Tags: %s
-            Description: %s
             Code:
             %s""", id, title, language, code);
     }
