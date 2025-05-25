@@ -201,3 +201,10 @@ The application uses the following configuration:
 - Jackson for JSON processing
 - JUnit for testing
 - Maven for build management
+
+<!--
+Problem when i try to start the program and the 2 files alrady exists
+During the search, it gives me a problem with %s
+For the edit, how can the user know the snipped id?
+for the export, it shouldent ask my to choise, the file is always txt and also problem with %s
+-->

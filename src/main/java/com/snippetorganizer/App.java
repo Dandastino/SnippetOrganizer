@@ -14,10 +14,9 @@ public class App {
                     --- CODE SNIPPET ORGANIZER ---
                         1. Add new snippet
                         2. Search snippets
-                        3. Browse by category
-                        4. Edit snippet
-                        5. Delete snippet
-                        6. Export snippets
+                        3. Edit snippet
+                        4. Delete snippet
+                        5. Export snippets
                         0. Close application
                     Select an option: """);
                 
@@ -75,16 +74,6 @@ public class App {
                                 System.out.print("New language: ");
                                 String newLanguage = getNonEmptyInput(scanner, "Language");
 
-                                System.out.print("New category: ");
-                                String newCategory = getNonEmptyInput(scanner, "Category");
-
-                                System.out.print("New description: ");
-                                String newDescription = getNonEmptyInput(scanner, "Description");
-
-                                System.out.println("Enter new tags (comma-separated): ");
-                                String tagsInput = scanner.nextLine();
-                                String[] newTags = tagsInput.split(",");
-
                                 System.out.println("Enter the new code (end with \"X\"): ");
                                 StringBuilder newCodeBuilder = new StringBuilder();
                                 while (true) {
@@ -112,42 +101,13 @@ public class App {
                             }
                         }
                         case 5 -> {
-                            System.out.println("""
-                                Export options:
-                                1. Export all snippets to a single file
-                                2. Export by category
-                                Select an option: """);
-                            
-                            if (scanner.hasNextInt()) {
-                                int exportChoice = scanner.nextInt();
-                                scanner.nextLine(); // Consume newline
-                                
-                                switch (exportChoice) {
-                                    case 1 -> {
-                                        System.out.print("Enter output filename: ");
-                                        String filename = scanner.nextLine();
-                                        try {
-                                            SnippetExporter.exportToText(manager.getAllSnippets(), filename);
-                                            System.out.println("Snippets exported successfully!");
-                                        } catch (IOException e) {
-                                            System.out.println("Error exporting snippets: " + e.getMessage());
-                                        }
-                                    }
-                                    case 2 -> {
-                                        System.out.print("Enter output directory: ");
-                                        String directory = scanner.nextLine();
-                                        try {
-                                            SnippetExporter.exportByCategory(manager.getAllSnippets(), directory);
-                                            System.out.println("Snippets exported by category successfully!");
-                                        } catch (IOException e) {
-                                            System.out.println("Error exporting snippets: " + e.getMessage());
-                                        }
-                                    }
-                                    default -> System.out.println("Invalid export option.");
-                                }
-                            } else {
-                                System.out.println("Please enter a valid number.");
-                                scanner.nextLine(); // Consume invalid input
+                            System.out.print("Enter output filename: ");
+                            String filename = scanner.nextLine();
+                            try {
+                                SnippetExporter.exportToText(manager.getAllSnippets(), filename);
+                                System.out.println("Snippets exported successfully!");
+                            } catch (IOException e) {
+                                System.out.println("Error exporting snippets: " + e.getMessage());
                             }
                         }
                         default -> System.out.println("Invalid option. Please try again.");
@@ -173,11 +133,11 @@ public class App {
 
     private static int getValidIntInput(Scanner scanner, String fieldName) {
         if (!scanner.hasNextInt()) {
-            scanner.nextLine(); // Consume invalid input
+            scanner.nextLine();
             throw new IllegalArgumentException("Please enter a valid " + fieldName);
         }
         int value = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
         if (value < 0) {
             throw new IllegalArgumentException(fieldName + " cannot be negative");
         }

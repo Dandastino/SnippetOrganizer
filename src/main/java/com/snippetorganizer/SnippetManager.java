@@ -3,6 +3,8 @@ package com.snippetorganizer;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -26,6 +28,28 @@ public class SnippetManager {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.snippetCollection = new SnippetCollection("Main Collection");
+        
+        // Clear files on startup
+        try {
+            // Clear snippets.json
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            objectMapper.writeValue(file, new Snippet[0]);
+            
+            // Clear log file
+            File logFile = new File("snippet_organizer.log");
+            if (logFile.exists()) {
+                logFile.delete();
+            }
+            logFile.createNewFile();
+            
+            System.out.println("Files cleared on startup.");
+        } catch (IOException e) {
+            System.err.println("Warning: Error clearing files: " + e.getMessage());
+        }
+        
         loadSnippets();
     }
 
@@ -34,15 +58,19 @@ public class SnippetManager {
      * If the file does not exist or is empty, it initializes an empty collection.
      */
     private void loadSnippets() {
-        try {
-            if (file.exists() && file.length() > 0) {
+        if (file.exists() && file.length() > 0) {
+            try {
                 Snippet[] snippets = objectMapper.readValue(file, Snippet[].class);
+                // Clear the collection first
+                snippetCollection.getSnippets().clear();
+                // Add all loaded snippets
                 for (Snippet snippet : snippets) {
                     snippetCollection.addSnippet(snippet);
                 }
+                System.out.println("Successfully loaded " + snippets.length + " snippets from file.");
+            } catch (Exception e) {
+                System.err.println("Warning: Error reading snippets file: " + e.getMessage());
             }
-        } catch (IOException e) {
-            throw new SnippetException("Error loading snippets", e);
         }
     }
 
@@ -53,10 +81,7 @@ public class SnippetManager {
      */
     private int getNextId() {
         int maxId = 0;
-        SnippetIterator iterator = new SnippetIterator(snippetCollection.getSnippets());
-        
-        while (iterator.hasNext()) {
-            Snippet snippet = iterator.next();
+        for (Snippet snippet : snippetCollection.getSnippets()) {
             if (snippet.getId() > maxId) {
                 maxId = snippet.getId();
             }
@@ -72,9 +97,15 @@ public class SnippetManager {
      */
     public void addSnippet(String title, String language, String code) {
         try {
-            Snippet snippet = SnippetFactory.createSnippet(getNextId(),title,language,code);
-            snippetCollection.addSnippet(snippet);
+            // Create new snippet
+            Snippet newSnippet = SnippetFactory.createSnippet(getNextId(), title, language, code);
+            
+            // Add to collection
+            snippetCollection.addSnippet(newSnippet);
+            
+            // Save to file
             saveSnippets();
+            
             SnippetLogger.logInfo("Added new snippet: " + title);
         } catch (Exception e) {
             SnippetLogger.logError("Error adding snippet", e);
@@ -179,7 +210,11 @@ public class SnippetManager {
     */
     private void saveSnippets() {
         try {
-            objectMapper.writeValue(file, snippetCollection.getSnippets());
+            // Get all snippets from the collection
+            List<Snippet> allSnippets = snippetCollection.getSnippets();
+            
+            // Save to file
+            objectMapper.writeValue(file, allSnippets);
         } catch (IOException e) {
             SnippetLogger.logError("Error saving snippets", e);
             throw new SnippetException("Error saving snippets", e);

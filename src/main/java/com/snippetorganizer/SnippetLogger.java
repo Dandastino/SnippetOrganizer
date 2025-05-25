@@ -26,6 +26,13 @@ public class SnippetLogger {
             String logEntry = String.format("[%s] %s%n", timestamp, message);
             
             Path logPath = Paths.get(LOG_FILE);
+            
+            // If log file exists and is too large (e.g., > 1MB), delete it
+            if (Files.exists(logPath) && Files.size(logPath) > 1024 * 1024) {
+                Files.delete(logPath);
+            }
+            
+            // Create new log file if it doesn't exist
             if (!Files.exists(logPath)) {
                 Files.createFile(logPath);
             }
