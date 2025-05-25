@@ -33,7 +33,7 @@ class SnippetManagerTest {
         Snippet snippet = snippets.get(0);
         assertEquals("Title1", snippet.getTitle());
         assertEquals("Java", snippet.getLanguage());
-        assertEquals("System.out.println(\"Hello World\");\n", snippet.getCode());
+        assertEquals("System.out.println(\"Hello World\");", snippet.getCode());
     }
 
     @Test
@@ -48,7 +48,7 @@ class SnippetManagerTest {
         Snippet updated = manager.getAllSnippets().get(0);
         assertEquals("NewTitle", updated.getTitle());
         assertEquals("Python", updated.getLanguage());
-        assertEquals("print(\"Updated\")\n", updated.getCode());
+        assertEquals("print(\"Updated\")", updated.getCode());
     }
 
     @Test
