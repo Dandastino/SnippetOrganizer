@@ -17,6 +17,7 @@ public class App {
                         3. Edit snippet
                         4. Delete snippet
                         5. Export snippets
+                        6. Analyze snippets
                         0. Close application
                     Select an option: """);
                 
@@ -110,6 +111,66 @@ public class App {
                                 System.out.println("Snippets exported successfully!");
                             } catch (IOException e) {
                                 System.out.println("Error exporting snippets: " + e.getMessage());
+                            }
+                        }
+                        case 6 -> {
+                            // New analysis feature using SnippetComponent interface
+                            System.out.println("\n=== SNIPPET ANALYSIS ===");
+                            SnippetAnalyzer.displayAnalysis(manager.getSnippetComponent());
+                            
+                            // Show additional analysis options
+                            System.out.print("\nWould you like to see snippets by language? (y/n): ");
+                            String showByLanguage = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(showByLanguage)) {
+                                System.out.print("Enter language to filter: ");
+                                String language = scanner.nextLine();
+                                var snippetsByLanguage = SnippetAnalyzer.findSnippetsByLanguage(manager.getSnippetComponent(), language);
+                                if (snippetsByLanguage.isEmpty()) {
+                                    System.out.println("No snippets found for language: " + language);
+                                } else {
+                                    System.out.println("Found " + snippetsByLanguage.size() + " snippets in " + language + ":");
+                                    snippetsByLanguage.forEach(snippet -> 
+                                        System.out.println("  - " + snippet.getTitle()));
+                                }
+                            }
+                            
+                            System.out.print("\nWould you like to see long snippets (>100 chars)? (y/n): ");
+                            String showLongSnippets = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(showLongSnippets)) {
+                                var longSnippets = SnippetAnalyzer.getSnippetsWithCodeLongerThan(manager.getSnippetComponent(), 100);
+                                if (longSnippets.isEmpty()) {
+                                    System.out.println("No snippets found with code longer than 100 characters.");
+                                } else {
+                                    System.out.println("Found " + longSnippets.size() + " snippets with code > 100 chars:");
+                                    longSnippets.forEach(snippet -> 
+                                        System.out.println("  - " + snippet.getTitle() + " (" + snippet.getCode().length() + " chars)"));
+                                }
+                            }
+                            
+                            System.out.print("\nWould you like to export a summary report? (y/n): ");
+                            String exportReport = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(exportReport)) {
+                                System.out.print("Enter report filename: ");
+                                String reportFilename = scanner.nextLine();
+                                try {
+                                    SnippetExporter.exportSummaryReport(manager.getSnippetComponent(), reportFilename);
+                                    System.out.println("Summary report exported successfully!");
+                                } catch (IOException e) {
+                                    System.out.println("Error exporting report: " + e.getMessage());
+                                }
+                            }
+                            
+                            System.out.print("\nWould you like to export by language? (y/n): ");
+                            String exportByLanguage = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(exportByLanguage)) {
+                                System.out.print("Enter base filename (e.g., 'snippets'): ");
+                                String baseFilename = scanner.nextLine();
+                                try {
+                                    SnippetExporter.exportByLanguage(manager.getSnippetComponent(), baseFilename);
+                                    System.out.println("Language-based export completed successfully!");
+                                } catch (IOException e) {
+                                    System.out.println("Error exporting by language: " + e.getMessage());
+                                }
                             }
                         }
                         default -> System.out.println("Invalid option. Please try again.");

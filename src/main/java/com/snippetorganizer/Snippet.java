@@ -1,9 +1,14 @@
 package com.snippetorganizer;
+
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /*
  * Snippet class represents a code snippet with an ID, title, language, and code.
  * It provides methods to get and set these properties, as well as a method to return a string representation of the snippet.
+ * Implements SnippetComponent as a leaf node in the Composite Pattern.
  */
-public final class Snippet {
+public final class Snippet implements SnippetComponent {
 
     private int id;
     private String title;
@@ -98,6 +103,49 @@ public final class Snippet {
             throw new IllegalArgumentException("Language cannot be null or empty");
         }
         this.language = language;
+    }
+
+    // Composite Pattern Implementation
+    @JsonIgnore
+    @Override
+    public String getName() {
+        return title;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Snippet> getAllSnippets() {
+        return List.of(this);
+    }
+
+    @JsonIgnore
+    @Override
+    public void addSnippet(Snippet snippet) {
+        throw new UnsupportedOperationException("Cannot add snippet to individual snippet");
+    }
+
+    @JsonIgnore
+    @Override
+    public void removeSnippet(Snippet snippet) {
+        throw new UnsupportedOperationException("Cannot remove snippet from individual snippet");
+    }
+
+    @JsonIgnore
+    @Override
+    public int getSnippetCount() {
+        return 1;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @JsonIgnore
+    @Override
+    public void display() {
+        System.out.println(this.toString());
     }
 
     /*

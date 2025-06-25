@@ -10,22 +10,23 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 /*
  * SnippetManager class manages the collection of code snippets.
  * It provides methods to add, search, edit, delete, and browse snippets.
+ * Uses SnippetComponent interface for better abstraction and flexibility.
  */
 public class SnippetManager {
     private static final String FILE_NAME = "snippets.json";
     private final File file;
     private final ObjectMapper objectMapper;
-    private final SnippetCollection snippetCollection;
+    private final SnippetComponent snippetComponent;
 
     /*
      * Constructor for SnippetManager.
-     * Initializes the file, object mapper, and snippet collection.
+     * Initializes the file, object mapper, and snippet component.
      */
     public SnippetManager() {
         this.file = new File(FILE_NAME);
         this.objectMapper = new ObjectMapper();
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        this.snippetCollection = new SnippetCollection("Main Collection");
+        this.snippetComponent = new SnippetCollection("Main Collection");
         
         try {
             if (file.exists()) {
@@ -49,36 +50,28 @@ public class SnippetManager {
     }
 
     /*
-     * Shows the user all the snippet.
+     * Shows the user all the snippets using the component interface.
      */ 
     public void listSnippets() {
-        List<Snippet> snippets = getAllSnippets();
-        if (snippets.isEmpty()) {
+        if (snippetComponent.isEmpty()) {
             System.out.println("No snippets available.");
             return;
         }
 
-        for (Snippet snippet : snippets) {
-            System.out.println("ID: " + snippet.getId());
-            System.out.println("Title: " + snippet.getTitle());
-            System.out.println("Language: " + snippet.getLanguage());
-            System.out.println("Code:\n" + snippet.getCode());
-            System.out.println("---------------------------");
-        }
+        snippetComponent.display();
     }
 
-
     /*
-     * Loads snippets from the JSON file into the snippet collection.
+     * Loads snippets from the JSON file into the snippet component.
      * If the file does not exist or is empty, it initializes an empty collection.
      */
     private void loadSnippets() {
         if (file.exists() && file.length() > 0) {
             try {
                 Snippet[] snippets = objectMapper.readValue(file, Snippet[].class);
-                snippetCollection.getSnippets().clear();
+                // Clear existing snippets and add loaded ones
                 for (Snippet snippet : snippets) {
-                    snippetCollection.addSnippet(snippet);
+                    snippetComponent.addSnippet(snippet);
                 }
                 System.out.println("Successfully loaded " + snippets.length + " snippets from file.");
             } catch (IOException e) {
@@ -94,7 +87,7 @@ public class SnippetManager {
      */
     private int getNextId() {
         int maxId = 0;
-        for (Snippet snippet : snippetCollection.getSnippets()) {
+        for (Snippet snippet : snippetComponent.getAllSnippets()) {
             if (snippet.getId() > maxId) {
                 maxId = snippet.getId();
             }
@@ -111,7 +104,7 @@ public class SnippetManager {
     public void addSnippet(String title, String language, String code) {
         try {
             Snippet newSnippet = SnippetFactory.createSnippet(getNextId(), title, language, code);
-            snippetCollection.addSnippet(newSnippet);
+            snippetComponent.addSnippet(newSnippet);
             saveSnippets();
             
             SnippetLogger.logInfo("Added new snippet: " + title);
@@ -130,7 +123,7 @@ public class SnippetManager {
             throw new SnippetException("Please provide a valid value for searching.");
         }
 
-        SnippetIterator iterator = new SnippetIterator(snippetCollection.getSnippets());
+        SnippetIterator iterator = new SnippetIterator(snippetComponent.getAllSnippets());
         boolean found = false;
 
         while (iterator.hasNext()) {
@@ -154,16 +147,15 @@ public class SnippetManager {
         }
     }
 
-
     /*
      * Edits an existing snippet in the collection.
      * @param snippetId the ID of the snippet to edit
      * @param newTitle the new title of the snippet
      * @param newLanguage the new programming language of the snippet
-     * @param newCategory the new category of the snippet
+     * @param newCode the new code of the snippet
      */
     public void editSnippet(int snippetId, String newTitle, String newLanguage, String newCode) {
-        SnippetIterator iterator = new SnippetIterator(snippetCollection.getSnippets());
+        SnippetIterator iterator = new SnippetIterator(snippetComponent.getAllSnippets());
         boolean found = false;
 
         while (iterator.hasNext()) {
@@ -190,13 +182,13 @@ public class SnippetManager {
      * @param snippetId the ID of the snippet to delete
      */
     public void deleteSnippet(int snippetId) {
-        SnippetIterator iterator = new SnippetIterator(snippetCollection.getSnippets());
+        SnippetIterator iterator = new SnippetIterator(snippetComponent.getAllSnippets());
         boolean found = false;
 
         while (iterator.hasNext()) {
             Snippet snippet = iterator.next();
             if (snippet.getId() == snippetId) {
-                snippetCollection.removeSnippet(snippet);
+                snippetComponent.removeSnippet(snippet);
                 found = true;
                 break;
             }
@@ -215,7 +207,23 @@ public class SnippetManager {
      * @return a list of all snippets
      */
     public List<Snippet> getAllSnippets() {
-        return snippetCollection.getSnippets();
+        return snippetComponent.getAllSnippets();
+    }
+
+    /*
+     * Gets the snippet component for advanced operations.
+     * @return the snippet component
+     */
+    public SnippetComponent getSnippetComponent() {
+        return snippetComponent;
+    }
+
+    /*
+     * Gets the total number of snippets.
+     * @return the number of snippets
+     */
+    public int getSnippetCount() {
+        return snippetComponent.getSnippetCount();
     }
 
     /*
@@ -223,7 +231,7 @@ public class SnippetManager {
     */
     private void saveSnippets() {
         try {
-            List<Snippet> allSnippets = snippetCollection.getSnippets();
+            List<Snippet> allSnippets = snippetComponent.getAllSnippets();
             
             objectMapper.writeValue(file, allSnippets);
         } catch (IOException e) {
