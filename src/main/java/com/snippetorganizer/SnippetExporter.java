@@ -50,7 +50,14 @@ public class SnippetExporter {
             content.append(snippet.toString()).append("\n\n");
         }
         
-        Path filePath = Paths.get(DATA_DIR, filename);
+        Path filePath = Paths.get(filename);
+        if (!filePath.isAbsolute()) {
+            filePath = Paths.get(DATA_DIR, filename);
+        }
+        // Ensure parent directory exists
+        if (filePath.getParent() != null && !Files.exists(filePath.getParent())) {
+            Files.createDirectories(filePath.getParent());
+        }
         Files.writeString(filePath, content.toString());
         SnippetLogger.logInfo("Exported " + snippets.size() + " snippets to " + filename);
     }
@@ -79,7 +86,14 @@ public class SnippetExporter {
             content.append(snippet.toString()).append("\n\n");
         }
         
-        Path filePath = Paths.get(DATA_DIR, filename);
+        Path filePath = Paths.get(filename);
+        if (!filePath.isAbsolute()) {
+            filePath = Paths.get(DATA_DIR, filename);
+        }
+        // Ensure parent directory exists
+        if (filePath.getParent() != null && !Files.exists(filePath.getParent())) {
+            Files.createDirectories(filePath.getParent());
+        }
         Files.writeString(filePath, content.toString());
         SnippetLogger.logInfo("Exported component '" + component.getName() + "' to " + filename);
     }
@@ -155,7 +169,14 @@ public class SnippetExporter {
         content.append("Shortest Snippet: ").append(analysis.get("shortestSnippet")).append("\n");
         content.append("===============================\n");
         
-        Path filePath = Paths.get(DATA_DIR, filename);
+        Path filePath = Paths.get(filename);
+        if (!filePath.isAbsolute()) {
+            filePath = Paths.get(DATA_DIR, filename);
+        }
+        // Ensure parent directory exists
+        if (filePath.getParent() != null && !Files.exists(filePath.getParent())) {
+            Files.createDirectories(filePath.getParent());
+        }
         Files.writeString(filePath, content.toString());
         SnippetLogger.logInfo("Exported summary report for component '" + component.getName() + "' to " + filename);
     }

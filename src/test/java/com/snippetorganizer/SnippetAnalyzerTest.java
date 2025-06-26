@@ -1,16 +1,22 @@
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+package com.snippetorganizer;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
-import com.snippetorganizer.Snippet;
-import com.snippetorganizer.SnippetCollection;
-import com.snippetorganizer.SnippetComponent;
-import com.snippetorganizer.SnippetAnalyzer;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static com.snippetorganizer.TestDataUtil.javaSnippet;
+import static com.snippetorganizer.TestDataUtil.jsSnippet;
+import static com.snippetorganizer.TestDataUtil.longSnippet;
+import static com.snippetorganizer.TestDataUtil.pythonSnippet;
+import static com.snippetorganizer.TestDataUtil.shortSnippet;
 
 /**
  * Test suite for the SnippetAnalyzer class.
@@ -28,25 +34,11 @@ class SnippetAnalyzerTest {
     @BeforeEach
     void setUp() {
         component = new SnippetCollection("Test Collection");
-        
-        Set<String> javaTags = new HashSet<>();
-        javaTags.add("java");
-        javaTags.add("oop");
-        
-        Set<String> pythonTags = new HashSet<>();
-        pythonTags.add("python");
-        pythonTags.add("scripting");
-        
-        Set<String> jsTags = new HashSet<>();
-        jsTags.add("javascript");
-        jsTags.add("web");
-        
-        javaSnippet = new Snippet(1, "Java Class", "Java", "public class Test {}", javaTags, "A Java class");
-        pythonSnippet = new Snippet(2, "Python Function", "Python", "def test(): pass", pythonTags, "A Python function");
-        jsSnippet = new Snippet(3, "JS Function", "JavaScript", "function test() {}", jsTags, "A JavaScript function");
-        longSnippet = new Snippet(4, "Long Code", "Java", "public class VeryLongClass { public void veryLongMethod() { System.out.println(\"This is a very long method with lots of code and multiple lines\"); } }", new HashSet<>(), "A very long snippet");
-        shortSnippet = new Snippet(5, "Short Code", "Python", "x=1", new HashSet<>(), "A very short snippet");
-        
+        javaSnippet = javaSnippet(1);
+        pythonSnippet = pythonSnippet(2);
+        jsSnippet = jsSnippet(3);
+        longSnippet = longSnippet(4);
+        shortSnippet = shortSnippet(5);
         component.addSnippet(javaSnippet);
         component.addSnippet(pythonSnippet);
         component.addSnippet(jsSnippet);

@@ -1,16 +1,17 @@
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-
+package com.snippetorganizer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.junit.jupiter.api.BeforeEach;
+import java.io.File;
 
-import com.snippetorganizer.SnippetLogger;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test suite for the SnippetLogger class.
@@ -22,16 +23,16 @@ class SnippetLoggerTest {
     private Path logPath;
 
     @BeforeEach
-    void setUp() throws IOException {
-        logPath = Paths.get(LOG_FILE);
-        // Clean up any existing log file
-        Files.deleteIfExists(logPath);
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        // Clean up log file after each test
-        Files.deleteIfExists(logPath);
+    void setUp() throws Exception {
+        File dataDir = new File("data");
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+        logPath = dataDir.toPath().resolve(LOG_FILE);
+        // Clean up log file before each test
+        if (Files.exists(logPath)) {
+            Files.delete(logPath);
+        }
     }
 
     @Test

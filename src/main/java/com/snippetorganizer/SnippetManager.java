@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Core management class for the Snippet Organizer application.
+ * 
  * @author Sherif Moustafa
  * @version 1.0
  * @see SnippetComponent
@@ -327,6 +328,7 @@ public class SnippetManager {
 
     /**
      * Saves the current state of the snippet collection to the JSON file.
+     * 
      * @throws SnippetException if an error occurs during file writing
      */
     private void saveSnippets() {

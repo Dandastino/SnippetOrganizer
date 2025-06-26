@@ -1,8 +1,10 @@
-import static org.junit.jupiter.api.Assertions.*;
+package com.snippetorganizer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-import com.snippetorganizer.Snippet;
-import com.snippetorganizer.SnippetFactory;
 
 /**
  * Test suite for the SnippetFactory class.

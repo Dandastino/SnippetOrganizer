@@ -53,6 +53,10 @@ public class SnippetLogger {
             if (Files.exists(logPath) && Files.size(logPath) > 1024 * 1024) {
                 Files.delete(logPath);
             }
+            // Ensure log file exists before appending
+            if (!Files.exists(logPath)) {
+                Files.createFile(logPath);
+            }
             
             Files.write(logPath, logEntry.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {

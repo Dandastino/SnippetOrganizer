@@ -1,21 +1,17 @@
+package com.snippetorganizer;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
-import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.snippetorganizer.Snippet;
-import com.snippetorganizer.SnippetExporter;
-import com.snippetorganizer.SnippetCollection;
-import com.snippetorganizer.SnippetComponent;
 
 class SnippetExporterTest {
 
@@ -24,25 +20,12 @@ class SnippetExporterTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        File dataDir = new File("data");
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
         tempFile = Files.createTempFile("snippets_test_", ".txt");
         tempDir = Files.createTempDirectory("export_test_");
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        Files.deleteIfExists(tempFile);
-        // Clean up temp directory and its contents
-        if (tempDir != null && Files.exists(tempDir)) {
-            Files.walk(tempDir)
-                .sorted((a, b) -> b.compareTo(a)) // Delete files before directories
-                .forEach(path -> {
-                    try {
-                        Files.deleteIfExists(path);
-                    } catch (IOException e) {
-                        // Ignore cleanup errors
-                    }
-                });
-        }
     }
 
     @Test
