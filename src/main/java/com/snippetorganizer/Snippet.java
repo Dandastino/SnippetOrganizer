@@ -1,12 +1,14 @@
 package com.snippetorganizer;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Represents a code snippet with comprehensive metadata and functionality.
+ * 
  * @author Sherif Moustafa
  * @version 1.0
  * @see SnippetComponent
@@ -34,6 +36,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Constructs a new Snippet with basic information.
+     * 
      * @param id the unique identifier for the snippet (must be non-negative)
      * @param title the title of the snippet (must not be null or empty)
      * @param language the programming language of the snippet (must not be null or empty)
@@ -51,6 +54,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Constructs a new Snippet with complete information including tags and description.
+     * 
      * @param id the unique identifier for the snippet (must be non-negative)
      * @param title the title of the snippet (must not be null or empty)
      * @param language the programming language of the snippet (must not be null or empty)
@@ -70,6 +74,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets the code content of the snippet.
+     * 
      * @return the code content of the snippet
      */
     public String getCode() {
@@ -78,6 +83,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Sets the code content of the snippet.
+     * 
      * @param code the code content to set (must not be null or empty)
      * @throws IllegalArgumentException if the code is null or empty
      */
@@ -90,6 +96,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets the unique identifier of the snippet.
+     * 
      * @return the ID of the snippet
      */
     public int getId() {
@@ -98,6 +105,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Sets the unique identifier of the snippet.
+     * 
      * @param id the ID to set (must be non-negative)
      * @throws IllegalArgumentException if the ID is negative
      */
@@ -110,6 +118,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets the title of the snippet.
+     * 
      * @return the title of the snippet
      */
     public String getTitle() {
@@ -118,6 +127,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Sets the title of the snippet.
+     * 
      * @param title the title to set (must not be null or empty)
      * @throws IllegalArgumentException if the title is null or empty
      */
@@ -130,6 +140,7 @@ public final class Snippet implements SnippetComponent {
     
     /**
      * Gets the programming language of the snippet.
+     * 
      * @return the programming language of the snippet
      */
     public String getLanguage() {
@@ -138,6 +149,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Sets the programming language of the snippet.
+     * 
      * @param language the programming language to set (must not be null or empty)
      * @throws IllegalArgumentException if the language is null or empty
      */
@@ -150,6 +162,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets a copy of the tags associated with this snippet.
+     * s
      * @return a new set containing all tags of the snippet
      */
     public Set<String> getTags() {
@@ -158,6 +171,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Sets the tags for this snippet.
+     * 
      * @param tags the tags to set (can be null, in which case an empty set is used)
      */
     public void setTags(Set<String> tags) {
@@ -166,6 +180,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Adds a tag to this snippet.
+     * 
      * @param tag the tag to add (null or empty tags are ignored)
      */
     public void addTag(String tag) {
@@ -176,6 +191,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Removes a tag from this snippet.
+     * 
      * @param tag the tag to remove
      */
     public void removeTag(String tag) {
@@ -184,6 +200,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Checks if this snippet has a specific tag.
+     * 
      * @param tag the tag to check for
      * @return true if the snippet has the tag, false otherwise
      */
@@ -193,6 +210,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets the description of this snippet.
+     * 
      * @return the description of the snippet (never null, may be empty)
      */
     public String getDescription() {
@@ -201,15 +219,16 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Sets the description of this snippet.
+     * 
      * @param description the description to set (null is converted to empty string)
      */
     public void setDescription(String description) {
         this.description = description != null ? description : "";
     }
 
-    // Composite Pattern Implementation
     /**
      * Gets the name of this component (returns the snippet title).
+     * 
      * @return the title of the snippet
      */
     @JsonIgnore
@@ -220,6 +239,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets all snippets in this component (returns a list containing only this snippet).
+     * 
      * @return a list containing only this snippet
      */
     @JsonIgnore
@@ -230,6 +250,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Adds a snippet to this component (not supported for leaf nodes).
+     * 
      * @param snippet the snippet to add (ignored)
      * @throws UnsupportedOperationException always thrown for leaf nodes
      */
@@ -241,6 +262,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Removes a snippet from this component (not supported for leaf nodes).
+     * 
      * @param snippet the snippet to remove (ignored)
      * @throws UnsupportedOperationException always thrown for leaf nodes
      */
@@ -252,6 +274,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Gets the snippet count for this component (always returns 1 for leaf nodes).
+     * 
      * @return always returns 1 for individual snippets
      */
     @JsonIgnore
@@ -262,6 +285,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Checks if this component is empty (always returns false for leaf nodes).
+     * 
      * @return always returns false for individual snippets
      */
     @JsonIgnore
@@ -270,9 +294,7 @@ public final class Snippet implements SnippetComponent {
         return false;
     }
 
-    /**
-     * Displays information about this snippet.
-     */
+    /** Displays information about this snippet. */
     @JsonIgnore
     @Override
     public void display() {
@@ -281,6 +303,7 @@ public final class Snippet implements SnippetComponent {
 
     /**
      * Returns a string representation of this snippet.
+     * 
      * @return a formatted string representation of the snippet
      */
     @Override

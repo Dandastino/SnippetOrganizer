@@ -1,14 +1,14 @@
 package com.snippetorganizer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.io.File;
 
 /**
  * Export utility class for Snippet Organizer data.
@@ -40,7 +40,6 @@ public class SnippetExporter {
             throw new IllegalArgumentException("Filename cannot be null or empty");
         }
         
-        // Create data directory if it doesn't exist
         File dataDir = new File(DATA_DIR);
         if (!dataDir.exists()) {
             dataDir.mkdirs();
@@ -72,12 +71,6 @@ public class SnippetExporter {
             throw new IllegalArgumentException("Filename cannot be null or empty");
         }
         
-        // Create data directory if it doesn't exist
-        File dataDir = new File(DATA_DIR);
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
-        }
-        
         StringBuilder content = new StringBuilder();
         content.append("=== EXPORTED FROM: ").append(component.getName()).append(" ===\n");
         content.append("Total Snippets: ").append(component.getSnippetCount()).append("\n\n");
@@ -105,12 +98,6 @@ public class SnippetExporter {
         }
         if (baseFilename == null || baseFilename.trim().isEmpty()) {
             throw new IllegalArgumentException("Base filename cannot be null or empty");
-        }
-        
-        // Create data directory if it doesn't exist
-        File dataDir = new File(DATA_DIR);
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
         }
         
         Map<String, List<Snippet>> snippetsByLanguage = new HashMap<>();
@@ -148,12 +135,6 @@ public class SnippetExporter {
         }
         if (filename == null || filename.trim().isEmpty()) {
             throw new IllegalArgumentException("Filename cannot be null or empty");
-        }
-        
-        // Create data directory if it doesn't exist
-        File dataDir = new File(DATA_DIR);
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
         }
         
         Map<String, Object> analysis = SnippetAnalyzer.analyzeComponent(component);

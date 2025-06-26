@@ -2,10 +2,12 @@ package com.snippetorganizer;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Collection class for managing groups of code snippets.
+ * 
  * @author Sherif Moustafa
  * @version 1.0
  * @see SnippetComponent
@@ -21,6 +23,7 @@ public class SnippetCollection implements SnippetComponent {
 
     /**
      * Constructs a new SnippetCollection with the specified name.
+     * 
      * @param name the name of the collection (must not be null or empty)
      * @throws IllegalArgumentException if the name is null or empty
      */
@@ -34,6 +37,7 @@ public class SnippetCollection implements SnippetComponent {
 
     /**
      * Adds a snippet to this collection.
+     * 
      * @param snippet the snippet to add (must not be null)
      * @throws IllegalArgumentException if the snippet is null
      */

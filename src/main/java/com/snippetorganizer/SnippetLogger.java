@@ -1,5 +1,6 @@
 package com.snippetorganizer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,14 +8,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.io.File;
 
 /**
  * Logging utility class for the Snippet Organizer application.
  * 
  * @author Sherif Moustafa
  * @version 1.0
- * @since 1.0
  */
 public class SnippetLogger {
     
@@ -53,11 +52,6 @@ public class SnippetLogger {
             // If log file exists and is too large (e.g., > 1MB), delete it
             if (Files.exists(logPath) && Files.size(logPath) > 1024 * 1024) {
                 Files.delete(logPath);
-            }
-            
-            // Create new log file if it doesn't exist
-            if (!Files.exists(logPath)) {
-                Files.createFile(logPath);
             }
             
             Files.write(logPath, logEntry.getBytes(), StandardOpenOption.APPEND);

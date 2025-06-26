@@ -2,9 +2,9 @@ package com.snippetorganizer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -36,7 +36,7 @@ public class SnippetManager {
 
     /** Constructs a new SnippetManager and initializes the system. */
     public SnippetManager() {
-        // Create data directory if it doesn't exist
+        // I have to change here and make it substitute the fie an not delate it and create a new one
         File dataDir = new File(DATA_DIR);
         if (!dataDir.exists()) {
             dataDir.mkdirs();

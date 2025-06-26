@@ -1,12 +1,13 @@
 package com.snippetorganizer;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
  * Main application class for the Snippet Organizer.
+ * 
  * @author Sherif Moustafa
  * @version 1.0
  */
@@ -14,6 +15,7 @@ public class App {
     
     /**
      * Main entry point for the Snippet Organizer application.
+     * 
      * @param args command line arguments (not used in this application)
      */
     public static void main(String[] args) {
@@ -50,9 +52,7 @@ public class App {
         }
     }
 
-    /**
-     * Displays the main menu with all available options.
-     */
+    /** Displays the main menu with all available options. */
     private static void displayMainMenu() {
         System.out.print("""
             --- CODE SNIPPET ORGANIZER ---
@@ -69,56 +69,51 @@ public class App {
 
     /**
      * Gets and validates the user's menu choice.
+     * 
      * @param scanner the Scanner object for reading user input
      * @return the validated menu choice as an integer
      */
     private static int getValidMenuChoice(Scanner scanner) {
         if (scanner.hasNextInt()) {
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
             return choice;
         } else {
             System.out.println("Please insert a valid number.");
-            scanner.next(); // Consume invalid input
-            return -1; // Return invalid choice to continue loop
+            scanner.next(); 
+            return -1; 
         }
     }
 
-    /**
-     * Handles the application exit.
-     */
+    /** Handles the application exit. */
     private static void handleExit() {
-        // Clean exit - the main loop will terminate
+        
     }
 
     /**
      * Handles adding a new snippet to the collection.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for adding snippets
      */
     private static void handleAddSnippet(Scanner scanner, SnippetManager manager) {
         try {
-            // Get required snippet information
             System.out.print("Title: ");
             String title = getNonEmptyInput(scanner, "Title");
 
             System.out.print("Language: ");
             String language = getNonEmptyInput(scanner, "Language");
 
-            // Get optional description
             System.out.print("Description (optional): ");
             String description = scanner.nextLine().trim();
 
-            // Get optional tags
             System.out.print("Tags (comma-separated, optional): ");
             String tagsInput = scanner.nextLine().trim();
             Set<String> tags = parseTags(tagsInput);
 
-            // Get code content
             System.out.println("Enter the code (end with \"X\"): ");
             String code = getCodeInput(scanner);
             
-            // Add the snippet to the collection
             manager.addSnippet(title, language, code, tags, description);
             System.out.println("Snippet added successfully!");
             
@@ -129,6 +124,7 @@ public class App {
 
     /**
      * Handles searching for snippets in the collection.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for searching snippets
      */
@@ -140,16 +136,18 @@ public class App {
         
         try {
             int searchChoice = getValidIntInput(scanner, "Search choice");
-            if (searchChoice == 1) {
-                System.out.print("Enter search keyword: ");
-                String keyword = scanner.nextLine();
-                manager.searchSnippets(keyword);
-            } else if (searchChoice == 2) {
-                System.out.print("Enter tag to search: ");
-                String tag = scanner.nextLine();
-                manager.searchByTag(tag);
-            } else {
-                System.out.println("Invalid search option.");
+            switch (searchChoice) {
+                case 1 -> {
+                    System.out.print("Enter search keyword: ");
+                    String keyword = scanner.nextLine();
+                    manager.searchSnippets(keyword);
+                }
+                case 2 -> {
+                    System.out.print("Enter tag to search: ");
+                    String tag = scanner.nextLine();
+                    manager.searchByTag(tag);
+                }
+                default -> System.out.println("Invalid search option.");
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
@@ -158,6 +156,7 @@ public class App {
 
     /**
      * Handles editing an existing snippet.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for editing snippets
      */
@@ -186,6 +185,7 @@ public class App {
 
     /**
      * Handles deleting a snippet from the collection.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for deleting snippets
      */
@@ -203,6 +203,7 @@ public class App {
 
     /**
      * Handles exporting snippets to a text file.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for accessing snippets
      */
@@ -219,15 +220,14 @@ public class App {
 
     /**
      * Handles snippet analysis and statistics.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void handleAnalyzeSnippets(Scanner scanner, SnippetManager manager) {
-        // Display enhanced analysis
         System.out.println("\n=== SNIPPET ANALYSIS ===");
         SnippetAnalyzer.displayEnhancedAnalysis(manager.getSnippetComponent());
         
-        // Additional analysis options
         offerLanguageAnalysis(scanner, manager);
         offerDescriptionAnalysis(scanner, manager);
         offerCodeLengthAnalysis(scanner, manager);
@@ -236,6 +236,7 @@ public class App {
 
     /**
      * Handles tag management operations.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for managing tags
      */
@@ -276,6 +277,7 @@ public class App {
 
     /**
      * Handles adding a tag to an existing snippet.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for managing snippets
      */
@@ -286,13 +288,13 @@ public class App {
         System.out.print("Enter tag to add: ");
         String tagToAdd = scanner.nextLine().trim();
         if (!tagToAdd.isEmpty()) {
-            // This would require adding a method to SnippetManager
             System.out.println("Tag management not fully implemented yet.");
         }
     }
 
     /**
      * Handles removing a tag from an existing snippet.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for managing snippets
      */
@@ -303,13 +305,13 @@ public class App {
         System.out.print("Enter tag to remove: ");
         String tagToRemove = scanner.nextLine().trim();
         if (!tagToRemove.isEmpty()) {
-            // This would require adding a method to SnippetManager
             System.out.println("Tag management not fully implemented yet.");
         }
     }
 
     /**
      * Handles viewing snippets by a specific tag.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for searching snippets
      */
@@ -323,6 +325,7 @@ public class App {
 
     /**
      * Offers additional language-based analysis options.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for accessing snippets
      */
@@ -345,6 +348,7 @@ public class App {
 
     /**
      * Offers description-based analysis options.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for accessing snippets
      */
@@ -365,6 +369,7 @@ public class App {
 
     /**
      * Offers code length analysis options.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for accessing snippets
      */
@@ -385,11 +390,11 @@ public class App {
 
     /**
      * Offers export options for analysis results.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void offerExportOptions(Scanner scanner, SnippetManager manager) {
-        // Offer summary report export
         System.out.print("\nWould you like to export a summary report? (y/n): ");
         String exportReport = scanner.nextLine();
         if ("y".equalsIgnoreCase(exportReport)) {
@@ -420,6 +425,7 @@ public class App {
 
     /**
      * Parses comma-separated tags from user input.
+     * 
      * @param tagsInput the comma-separated string of tags
      * @return a Set containing the individual tags
      */
@@ -438,6 +444,7 @@ public class App {
 
     /**
      * Gets code input from the user until they enter "X".
+     * 
      * @param scanner the Scanner object for reading user input
      * @return the complete code string
      * @throws IllegalArgumentException if the code is empty
@@ -458,6 +465,7 @@ public class App {
 
     /**
      * Gets non-empty input from the user for required fields.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param fieldName the name of the field being requested (for error messages)
      * @return the validated non-empty input string
@@ -473,6 +481,7 @@ public class App {
 
     /**
      * Gets and validates integer input from the user.
+     * 
      * @param scanner the Scanner object for reading user input
      * @param fieldName the name of the field being requested (for error messages)
      * @return the validated integer input

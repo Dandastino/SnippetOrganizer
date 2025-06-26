@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * Analysis utility class for Snippet Organizer data.
+ * 
  * @author Sherif Moustafa
  * @version 1.0
  * @see SnippetComponent
@@ -15,6 +16,7 @@ public class SnippetAnalyzer {
     
     /**
      * Analyzes a snippet component and returns comprehensive statistics.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @return a map containing analysis results
      * @throws IllegalArgumentException if component is null
@@ -49,6 +51,7 @@ public class SnippetAnalyzer {
     
     /**
      * Gets the distribution of programming languages in the component.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @return a map of language names to snippet counts
      * @throws IllegalArgumentException if component is null
@@ -70,6 +73,7 @@ public class SnippetAnalyzer {
     
     /**
      * Calculates the average code length in the component.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @return the average code length in characters, or 0.0 if empty
      * @throws IllegalArgumentException if component is null
@@ -93,6 +97,7 @@ public class SnippetAnalyzer {
     
     /**
      * Finds the snippet with the longest code in the component.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @return the snippet with the longest code, or null if the component is empty
      * @throws IllegalArgumentException if component is null
@@ -109,6 +114,7 @@ public class SnippetAnalyzer {
     
     /**
      * Finds the snippet with the shortest code in the component.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @return the snippet with the shortest code, or null if the component is empty
      * @throws IllegalArgumentException if component is null
@@ -125,6 +131,7 @@ public class SnippetAnalyzer {
     
     /**
      * Displays a comprehensive analysis of the component.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @throws IllegalArgumentException if component is null
      */
@@ -154,6 +161,7 @@ public class SnippetAnalyzer {
     
     /**
      * Finds snippets by programming language in the component.
+     * 
      * @param component the snippet component to search (must not be null)
      * @param language the language to search for (must not be null)
      * @return a list of snippets in the specified language
@@ -174,6 +182,7 @@ public class SnippetAnalyzer {
     
     /**
      * Gets snippets with code longer than a specified length.
+     * 
      * @param component the snippet component to search (must not be null)
      * @param minLength the minimum code length in characters
      * @return a list of snippets with code longer than the minimum length
@@ -194,6 +203,7 @@ public class SnippetAnalyzer {
 
     /**
      * Gets the distribution of tags in the component.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @return a map of tag names to usage counts
      * @throws IllegalArgumentException if component is null
@@ -216,6 +226,7 @@ public class SnippetAnalyzer {
 
     /**
      * Gets snippets that have descriptions.
+     * 
      * @param component the snippet component to search (must not be null)
      * @return a list of snippets that have descriptions
      * @throws IllegalArgumentException if component is null
@@ -232,6 +243,7 @@ public class SnippetAnalyzer {
 
     /**
      * Gets snippets without descriptions.
+     * 
      * @param component the snippet component to search (must not be null)
      * @return a list of snippets that don't have descriptions
      * @throws IllegalArgumentException if component is null
@@ -248,6 +260,7 @@ public class SnippetAnalyzer {
 
     /**
      * Displays enhanced analysis including tag statistics.
+     * 
      * @param component the snippet component to analyze (must not be null)
      * @throws IllegalArgumentException if component is null
      */
@@ -270,7 +283,6 @@ public class SnippetAnalyzer {
         languageStats.forEach((language, count) -> 
             System.out.println("  " + language + ": " + count + " snippets"));
         
-        // Tag statistics
         Map<String, Integer> tagStats = getTagDistribution(component);
         if (!tagStats.isEmpty()) {
             System.out.println("\nTag Distribution:");
