@@ -1,6 +1,10 @@
 package com.snippetorganizer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -37,35 +41,34 @@ public class SnippetManager {
 
     /** Constructs a new SnippetManager and initializes the system. */
     public SnippetManager() {
-        // I have to change here and make it substitute the fie an not delate it and create a new one
         File dataDir = new File(DATA_DIR);
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
-        
+
         this.file = new File(dataDir, FILE_NAME);
         this.objectMapper = new ObjectMapper();
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.snippetComponent = new SnippetCollection("Main Collection");
-        
+
         try {
-            if (file.exists()) {
-                file.delete();
+            // Crea il file solo se non esiste
+            if (!file.exists()) {
+                file.createNewFile();
+                objectMapper.writeValue(file, new Snippet[0]);
             }
-            file.createNewFile();
-            objectMapper.writeValue(file, new Snippet[0]);
-            
+
+            // Crea il file di log solo se non esiste
             File logFile = new File(dataDir, "snippet_organizer.log");
-            if (logFile.exists()) {
-                logFile.delete();
+            if (!logFile.exists()) {
+                logFile.createNewFile();
             }
-            logFile.createNewFile();
-            
-            System.out.println("Files cleared on startup.");
+
+            System.out.println("Files checked on startup.");
         } catch (IOException e) {
-            System.err.println("Warning: Error clearing files: " + e.getMessage());
+            System.err.println("Warning: Error initializing files: " + e.getMessage());
         }
-        
+
         loadSnippets();
     }
 
@@ -84,7 +87,6 @@ public class SnippetManager {
         if (file.exists() && file.length() > 0) {
             try {
                 Snippet[] snippets = objectMapper.readValue(file, Snippet[].class);
-                // Clear existing snippets and add loaded ones
                 for (Snippet snippet : snippets) {
                     snippetComponent.addSnippet(snippet);
                 }
@@ -111,20 +113,8 @@ public class SnippetManager {
     }
 
     /**
-     * Adds a new snippet to the collection with basic information.
-     * 
-     * @param title the title of the snippet (must not be null or empty)
-     * @param language the programming language of the snippet (must not be null or empty)
-     * @param code the code content of the snippet (must not be null or empty)
-     * @throws SnippetException if an error occurs during snippet creation or persistence
-     */
-    public void addSnippet(String title, String language, String code) {
-        addSnippet(title, language, code, new HashSet<>(), "");
-    }
-
-    /**
      * Adds a new snippet to the collection with complete information.
-     * 
+     *
      * @param title the title of the snippet (must not be null or empty)
      * @param language the programming language of the snippet (must not be null or empty)
      * @param code the code content of the snippet (must not be null or empty)
@@ -137,12 +127,23 @@ public class SnippetManager {
             Snippet newSnippet = new Snippet(getNextId(), title, language, code, tags, description);
             snippetComponent.addSnippet(newSnippet);
             saveSnippets();
-            
             SnippetLogger.logInfo("Added new snippet: " + title);
         } catch (Exception e) {
             SnippetLogger.logError("Error adding snippet", e);
             throw new SnippetException("Error adding snippet", e);
         }
+    }
+
+    /**
+     * Adds a new snippet to the collection with incomplete information.
+     *
+     * @param title the title of the snippet (must not be null or empty)
+     * @param language the programming language of the snippet (must not be null or empty)
+     * @param code the code content of the snippet (must not be null or empty)
+     * @throws SnippetException if an error occurs during snippet creation or persistence
+     */
+    public void addSnippet(String title, String language, String code) {
+        addSnippet(title, language, code, new HashSet<>(), "");
     }
 
     /**
@@ -328,13 +329,12 @@ public class SnippetManager {
 
     /**
      * Saves the current state of the snippet collection to the JSON file.
-     * 
+     *
      * @throws SnippetException if an error occurs during file writing
      */
     private void saveSnippets() {
         try {
             List<Snippet> allSnippets = snippetComponent.getAllSnippets();
-            
             objectMapper.writeValue(file, allSnippets);
         } catch (IOException e) {
             SnippetLogger.logError("Error saving snippets", e);

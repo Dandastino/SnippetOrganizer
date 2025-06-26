@@ -16,22 +16,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public final class Snippet implements SnippetComponent {
 
-    /** Unique identifier for the snippet */
+    /** Attributes for the snippet */
     private int id;
-    
-    /** Title or name of the snippet */
     private String title;
-    
-    /** Programming language of the snippet */
     private String language;
-    
-    /** The actual code content */
     private String code;
-    
-    /** Set of tags for categorization */
     private Set<String> tags;
-    
-    /** Optional description of the snippet */
     private String description;
 
     /**

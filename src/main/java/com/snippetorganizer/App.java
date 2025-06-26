@@ -22,11 +22,20 @@ public class App {
         int choice = -1;
         SnippetManager manager = new SnippetManager();
 
-        // Use try-with-resources to ensure Scanner is properly closed
         try (Scanner scanner = new Scanner(System.in)) {
             while (choice != 0) {
-                displayMainMenu();
-                
+                System.out.print("""
+                --- CODE SNIPPET ORGANIZER ---
+                    1. Add new snippet
+                    2. Search snippets
+                    3. Edit snippet
+                    4. Delete snippet
+                    5. Export snippets
+                    6. Analyze snippets
+                    7. Manage tags
+                    0. Close application
+                Select an option: """);
+                    
                 try {
                     choice = getValidMenuChoice(scanner);
 
@@ -50,21 +59,6 @@ public class App {
         } finally {
             System.out.println("Exiting the application.");
         }
-    }
-
-    /** Displays the main menu with all available options. */
-    private static void displayMainMenu() {
-        System.out.print("""
-            --- CODE SNIPPET ORGANIZER ---
-                1. Add new snippet
-                2. Search snippets
-                3. Edit snippet
-                4. Delete snippet
-                5. Export snippets
-                6. Analyze snippets
-                7. Manage tags
-                0. Close application
-            Select an option: """);
     }
 
     /**
