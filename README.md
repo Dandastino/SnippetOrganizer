@@ -157,18 +157,115 @@ All business logic errors are reported as user-friendly messages and logged. The
 ```mermaid
 classDiagram
     %% Main Classes and Interfaces
-    class App
-    class SnippetManager
-    class SnippetComponent
-    <<interface>> SnippetComponent
-    class Snippet
-    class SnippetCollection
-    class SnippetFactory
-    class SnippetIterator
-    class SnippetAnalyzer
-    class SnippetExporter
-    class SnippetLogger
-    class SnippetException
+    class App {
+        +main(String[] args) void
+    }
+    class SnippetManager {
+        -FILE_NAME: String
+        -DATA_DIR: String
+        -file: File
+        -objectMapper: ObjectMapper
+        -snippetComponent: SnippetComponent
+        +SnippetManager()
+        +addSnippet(String, String, String) void
+        +addSnippet(String, String, String, Set~String~, String) void
+        +searchSnippets(String) void
+        +searchByTag(String) void
+        +getAllTags() Set~String~
+        +editSnippet(int, String, String, String) void
+        +deleteSnippet(int) void
+        +getAllSnippets() List~Snippet~
+        +getSnippetComponent() SnippetComponent
+        +getSnippetCount() int
+    }
+    class SnippetComponent {
+        <<interface>>
+        +getName() String
+        +getAllSnippets() List~Snippet~
+        +addSnippet(Snippet) void
+        +removeSnippet(Snippet) void
+        +getSnippetCount() int
+        +isEmpty() boolean
+        +display() void
+    }
+    class Snippet {
+        -id: int
+        -title: String
+        -language: String
+        -code: String
+        -tags: Set~String~
+        -description: String
+        +Snippet(int, String, String, String)
+        +Snippet(int, String, String, String, Set~String~, String)
+        +getId() int
+        +setId(int) void
+        +getTitle() String
+        +setTitle(String) void
+        +getLanguage() String
+        +setLanguage(String) void
+        +getCode() String
+        +setCode(String) void
+        +getTags() Set~String~
+        +setTags(Set~String~) void
+        +addTag(String) void
+        +removeTag(String) void
+        +hasTag(String) boolean
+        +getDescription() String
+        +setDescription(String) void
+        +toString() String
+    }
+    class SnippetCollection {
+        -snippets: List~Snippet~
+        -name: String
+        +SnippetCollection(String)
+        +addSnippet(Snippet) void
+        +removeSnippet(Snippet) void
+        +getAllSnippets() List~Snippet~
+        +getName() String
+        +setName(String) void
+        +getSnippetCount() int
+        +isEmpty() boolean
+        +display() void
+    }
+    class SnippetFactory {
+        +createSnippet(int, String, String, String) Snippet
+    }
+    class SnippetIterator {
+        -snippets: List~Snippet~
+        -position: int
+        +SnippetIterator(List~Snippet~)
+        +hasNext() boolean
+        +next() Snippet
+    }
+    class SnippetAnalyzer {
+        +analyzeComponent(SnippetComponent) Map
+        +displayAnalysis(SnippetComponent) void
+        +displayEnhancedAnalysis(SnippetComponent) void
+        +getLanguageDistribution(SnippetComponent) Map
+        +getTagDistribution(SnippetComponent) Map
+        +getAverageCodeLength(SnippetComponent) double
+        +getLongestSnippet(SnippetComponent) Snippet
+        +getShortestSnippet(SnippetComponent) Snippet
+        +findSnippetsByLanguage(SnippetComponent, String) List~Snippet~
+        +getSnippetsWithCodeLongerThan(SnippetComponent, int) List~Snippet~
+        +getSnippetsWithDescriptions(SnippetComponent) List~Snippet~
+        +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
+    }
+    class SnippetExporter {
+        +exportToText(List~Snippet~, String) void
+        +exportComponentToText(SnippetComponent, String) void
+        +exportByLanguage(SnippetComponent, String) void
+        +exportSummaryReport(SnippetComponent, String) void
+    }
+    class SnippetLogger {
+        +log(String) void
+        +logInfo(String) void
+        +logError(String, Throwable) void
+    }
+    class SnippetException {
+        +SnippetException(String)
+        +SnippetException(String, Throwable)
+    }
 
     %% Interface Implementation
     SnippetComponent <|.. Snippet
