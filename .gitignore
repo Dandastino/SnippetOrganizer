@@ -1,10 +1,22 @@
-# Java compiled files
+# Compiled class files
 *.class
 
-# Application data and logs
-snippets.json
-snippet_organizer.log
+# Log files
 *.log
+snippet_organizer.log
+
+# Application data files
+snippets.json
+*.json.bak
+
+# Application data directory
+data/
+
+# Exported files (created by the application)
+exported_*.json
+component_*.json
+summary_*.json
+language_*.json
 
 # Maven
 target/
@@ -26,10 +38,14 @@ buildNumber.properties
 .classpath
 .project
 .factorypath
+.metadata/
 
-# OS specific
+# OS specific files
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
 
 # BlueJ files
 *.ctxt
@@ -46,6 +62,14 @@ Thumbs.db
 *.tar.gz
 *.rar
 
-# virtual machine crash logs
+# Virtual machine crash logs
 hs_err_pid*
-replay_pid* 
+replay_pid*
+
+# Test reports
+surefire-reports/
+test-output/
+
+# Temporary files
+*.tmp
+*.temp 

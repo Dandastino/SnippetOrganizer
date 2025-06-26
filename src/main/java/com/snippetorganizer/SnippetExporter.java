@@ -8,36 +8,76 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.io.File;
 
-/*
- * SnippetExporter class provides methods to export snippets to text files.
- * Uses SnippetComponent interface for better abstraction and flexibility.
+/**
+ * Export utility class for Snippet Organizer data.
+ * 
+ * @author Sherif Moustafa
+ * @version 1.0
+ * @see SnippetComponent
+ * @see Snippet
+ * @see SnippetAnalyzer
  */
 public class SnippetExporter {
-    /*
+    
+    /** The data directory for storing application files */
+    private static final String DATA_DIR = "data";
+    
+    /**
      * Exports a list of snippets to a single text file.
-     * @param snippets the list of snippets to export
-     * @param filename the name of the output file
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param snippets the list of snippets to export (must not be null)
+     * @param filename the name of the output file (must not be null or empty)
+     * @throws IOException if an I/O error occurs during file writing
+     * @throws IllegalArgumentException if snippets list or filename is null
      */
     public static void exportToText(List<Snippet> snippets, String filename) throws IOException {
+        if (snippets == null) {
+            throw new IllegalArgumentException("Snippets list cannot be null");
+        }
+        if (filename == null || filename.trim().isEmpty()) {
+            throw new IllegalArgumentException("Filename cannot be null or empty");
+        }
+        
+        // Create data directory if it doesn't exist
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+        
         StringBuilder content = new StringBuilder();
         for (Snippet snippet : snippets) {
             content.append(snippet.toString()).append("\n\n");
         }
         
-        Path filePath = Paths.get(filename);
+        Path filePath = Paths.get(DATA_DIR, filename);
         Files.writeString(filePath, content.toString());
-        SnippetLogger.logInfo("Exported snippets to " + filename);
+        SnippetLogger.logInfo("Exported " + snippets.size() + " snippets to " + filename);
     }
     
-    /*
-     * Exports a snippet component to a single text file.
-     * @param component the snippet component to export
-     * @param filename the name of the output file
-     * @throws IOException if an I/O error occurs
+    /**
+     * Exports a snippet component to a single text file with metadata.
+     * 
+     * @param component the snippet component to export (must not be null)
+     * @param filename the name of the output file (must not be null or empty)
+     * @throws IOException if an I/O error occurs during file writing
+     * @throws IllegalArgumentException if component or filename is null
      */
     public static void exportComponentToText(SnippetComponent component, String filename) throws IOException {
+        if (component == null) {
+            throw new IllegalArgumentException("Component cannot be null");
+        }
+        if (filename == null || filename.trim().isEmpty()) {
+            throw new IllegalArgumentException("Filename cannot be null or empty");
+        }
+        
+        // Create data directory if it doesn't exist
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+        
         StringBuilder content = new StringBuilder();
         content.append("=== EXPORTED FROM: ").append(component.getName()).append(" ===\n");
         content.append("Total Snippets: ").append(component.getSnippetCount()).append("\n\n");
@@ -46,18 +86,33 @@ public class SnippetExporter {
             content.append(snippet.toString()).append("\n\n");
         }
         
-        Path filePath = Paths.get(filename);
+        Path filePath = Paths.get(DATA_DIR, filename);
         Files.writeString(filePath, content.toString());
         SnippetLogger.logInfo("Exported component '" + component.getName() + "' to " + filename);
     }
     
-    /*
-     * Exports snippets by language to separate files.
-     * @param component the snippet component to export
-     * @param baseFilename the base filename (language will be appended)
-     * @throws IOException if an I/O error occurs
+    /**
+     * Exports snippets by programming language to separate files.
+     * 
+     * @param component the snippet component to export (must not be null)
+     * @param baseFilename the base filename for the language-specific files (must not be null or empty)
+     * @throws IOException if an I/O error occurs during file writing
+     * @throws IllegalArgumentException if component or baseFilename is null
      */
     public static void exportByLanguage(SnippetComponent component, String baseFilename) throws IOException {
+        if (component == null) {
+            throw new IllegalArgumentException("Component cannot be null");
+        }
+        if (baseFilename == null || baseFilename.trim().isEmpty()) {
+            throw new IllegalArgumentException("Base filename cannot be null or empty");
+        }
+        
+        // Create data directory if it doesn't exist
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+        
         Map<String, List<Snippet>> snippetsByLanguage = new HashMap<>();
         
         // Group snippets by language
@@ -78,13 +133,29 @@ public class SnippetExporter {
         SnippetLogger.logInfo("Exported " + snippetsByLanguage.size() + " language files from component '" + component.getName() + "'");
     }
     
-    /*
-     * Exports a summary report of the component.
-     * @param component the snippet component to export
-     * @param filename the name of the output file
-     * @throws IOException if an I/O error occurs
+    /**
+     * Exports a summary report of the snippet component.
+     * 
+     * @param component the snippet component to analyze and export (must not be null)
+     * @param filename the name of the output file (must not be null or empty)
+     * @throws IOException if an I/O error occurs during file writing
+     * @throws IllegalArgumentException if component or filename is null
+     * @see SnippetAnalyzer#analyzeComponent(SnippetComponent)
      */
     public static void exportSummaryReport(SnippetComponent component, String filename) throws IOException {
+        if (component == null) {
+            throw new IllegalArgumentException("Component cannot be null");
+        }
+        if (filename == null || filename.trim().isEmpty()) {
+            throw new IllegalArgumentException("Filename cannot be null or empty");
+        }
+        
+        // Create data directory if it doesn't exist
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+        
         Map<String, Object> analysis = SnippetAnalyzer.analyzeComponent(component);
         
         StringBuilder content = new StringBuilder();
@@ -103,7 +174,7 @@ public class SnippetExporter {
         content.append("Shortest Snippet: ").append(analysis.get("shortestSnippet")).append("\n");
         content.append("===============================\n");
         
-        Path filePath = Paths.get(filename);
+        Path filePath = Paths.get(DATA_DIR, filename);
         Files.writeString(filePath, content.toString());
         SnippetLogger.logInfo("Exported summary report for component '" + component.getName() + "' to " + filename);
     }

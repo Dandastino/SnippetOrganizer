@@ -1,19 +1,28 @@
 package com.snippetorganizer;
 
-/*
- * SnippetException class represents an exception that occurs in the Snippet Organizer application.
- * It extends the RuntimeException class and provides constructors to create exceptions with a message and/or a cause.
+/**
+ * Custom exception class for the Snippet Organizer application.
+ * 
+ * @author Sherif Moustafa
+ * @version 1.0
+ * @see RuntimeException
  */
 public class SnippetException extends RuntimeException {
+    
+    /**
+     * Constructs a new SnippetException with the specified detail message.
+     * 
+     * @param message the detail message explaining the error
+     */
     public SnippetException(String message) {
         super(message);
     }
 
-    /*
-     * This constructor allows for chaining exceptions, providing both a message and the original cause.
-     * @param message the error message
-     * @param cause the cause of the exception
+    /**
+     * Constructs a new SnippetException with the specified detail message and cause.
      * 
+     * @param message the detail message explaining the error
+     * @param cause the cause of the exception (which is saved for later retrieval)
      */
     public SnippetException(String message, Throwable cause) {
         super(message, cause);

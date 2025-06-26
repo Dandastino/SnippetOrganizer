@@ -2,7 +2,7 @@
 
 ## 🧠 Project Objective
 
-Create a Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database. Data is saved to files.
+Create a Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database. Data is saved to files in a dedicated `data/` directory.
 
 ## 👤 User Experience (Step-by-step)
 
@@ -20,6 +20,7 @@ When the user starts the app, a main menu appears:
 4. Delete snippet
 5. Export snippets
 6. Analyze snippets
+7. Manage tags
 0. Close application
 Select an option:
 ```
@@ -35,6 +36,12 @@ Title:
 Language:
 > Java
 
+Description (optional):
+> Efficient sorting algorithm with O(n²) complexity
+
+Tags (comma-separated, optional):
+> sorting, algorithm, java, bubble-sort
+
 Enter the code (end with "X" on a new line):
 > for (int i = 0; i < arr.length; i++) {
 >     ...
@@ -42,31 +49,40 @@ Enter the code (end with "X" on a new line):
 > X
 ```
 
-The snippet is saved in a file, snippets.json, with its metadata.
+The snippet is saved in a file, `data/snippets.json`, with its metadata, tags, and description.
 
 **✅ Phase 3: Searching Snippets**
 User selects 2 → Can search by:
 
-- Title
-- Language
-- Code
+- **Keyword Search**: Search across title, code, language, tags, and description
+- **Tag Search**: Find snippets by specific tags
 
 Example:
 
 ```shell
-Search snippets by keyword:
-> sort
+Search options:
+1. Search by keyword
+2. Search by tag
+Select search type: 1
+
+Enter search keyword: sort
 ```
 
 App shows:
 
 ```shell
-Found 2 snippets:
-1. Bubble Sort Java [Java] 
-2. Merge Sort Python [Python]
+Found snippet:
+ID: 1
+Title: Bubble Sort Java
+Language: Java
+Description: Efficient sorting algorithm with O(n²) complexity
+Tags: sorting, algorithm, java, bubble-sort
+Code:
+for (int i = 0; i < arr.length; i++) {
+    ...
+}
+---------------------------
 ```
-
-Shows snippets associated with the selected keyword.
 
 **✅ Phase 4: Edit / Delete**
 
@@ -74,7 +90,23 @@ Options 3 and 4: User chooses a snippet, modifies or deletes it. The app handles
 
 **✅ Phase 5: Export Snippets**
 
-Export all snippets to a single txt file with detailed formatting.
+Export all snippets to a single txt file with detailed formatting including tags and descriptions. Files are saved in the `data/` directory.
+
+**✅ Phase 6: Analyze Snippets**
+
+Comprehensive analysis including:
+- Language distribution
+- Tag distribution and statistics
+- Description statistics
+- Code length analysis
+- Longest/shortest snippets
+
+**✅ Phase 7: Manage Tags**
+
+- View all tags in the collection
+- Add tags to existing snippets
+- Remove tags from snippets
+- Search snippets by specific tags
 
 ## 📊 UML Class Diagram
 
@@ -90,12 +122,16 @@ classDiagram
     %% Core Business Logic
     class SnippetManager {
         -FILE_NAME: String
+        -DATA_DIR: String
         -file: File
         -objectMapper: ObjectMapper
         -snippetComponent: SnippetComponent
         +SnippetManager()
         +addSnippet(String, String, String) void
+        +addSnippet(String, String, String, Set~String~, String) void
         +searchSnippets(String) void
+        +searchByTag(String) void
+        +getAllTags() Set~String~
         +editSnippet(int, String, String, String) void
         +deleteSnippet(int) void
         +getAllSnippets() List~Snippet~
@@ -124,7 +160,10 @@ classDiagram
         -title: String
         -language: String
         -code: String
+        -tags: Set~String~
+        -description: String
         +Snippet(int, String, String, String)
+        +Snippet(int, String, String, String, Set~String~, String)
         +getId() int
         +setId(int) void
         +getTitle() String
@@ -133,6 +172,13 @@ classDiagram
         +setLanguage(String) void
         +getCode() String
         +setCode(String) void
+        +getTags() Set~String~
+        +setTags(Set~String~) void
+        +addTag(String) void
+        +removeTag(String) void
+        +hasTag(String) boolean
+        +getDescription() String
+        +setDescription(String) void
         +toString() String
     }
 
@@ -175,6 +221,7 @@ classDiagram
     class SnippetLogger {
         <<static>>
         -LOG_FILE: String
+        -DATA_DIR: String
         -formatter: DateTimeFormatter
         +log(String) void
         +logError(String, Throwable) void
@@ -186,17 +233,22 @@ classDiagram
         <<static>>
         +analyzeComponent(SnippetComponent) Map~String, Object~
         +getLanguageDistribution(SnippetComponent) Map~String, Integer~
+        +getTagDistribution(SnippetComponent) Map~String, Integer~
         +getAverageCodeLength(SnippetComponent) double
         +getLongestSnippet(SnippetComponent) Snippet
         +getShortestSnippet(SnippetComponent) Snippet
         +displayAnalysis(SnippetComponent) void
+        +displayEnhancedAnalysis(SnippetComponent) void
         +findSnippetsByLanguage(SnippetComponent, String) List~Snippet~
         +getSnippetsWithCodeLongerThan(SnippetComponent, int) List~Snippet~
+        +getSnippetsWithDescriptions(SnippetComponent) List~Snippet~
+        +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
     }
 
     %% Export Features
     class SnippetExporter {
         <<static>>
+        -DATA_DIR: String
         +exportToText(List~Snippet~, String) void
         +exportComponentToText(SnippetComponent, String) void
         +exportByLanguage(SnippetComponent, String) void
@@ -241,11 +293,17 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
 
 1. **File-based Storage**
    - Uses JSON for data persistence
+   - All files stored in dedicated `data/` directory
    - Easy to backup and version control
 
 2. **CLI First Approach**
    - Simple and fast interface
    - Keyboard-driven workflow
+
+3. **Enhanced Organization**
+   - Tags system for better categorization
+   - Descriptions for better documentation
+   - Multiple search options for easy retrieval
 
 ### Technical Patterns
 
@@ -274,6 +332,7 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
 
 1. **Collections Framework**
    - `List` for snippet collections
+   - `Set` for tags (prevents duplicates)
    - Custom collections and iterators
 
 2. **Generics**
@@ -282,7 +341,7 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
    - Better code organization
 
 3. **Java I/O**
-   - File-based storage
+   - File-based storage in `data/` directory
    - JSON serialization
    - Export functionality
 
@@ -291,7 +350,7 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
    - Timestamp tracking for all operations
    - Automatic log rotation (deletes logs > 1MB)
    - Error and info logging
-   - Log file: `snippet_organizer.log`
+   - Log file: `data/snippet_organizer.log`
 
 5. **JUnit Testing**
    - Unit tests for core functionality
@@ -327,43 +386,103 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
 3. Build with Maven: `mvn clean install`
 4. Run the application: `java -jar target/demo-1.0-SNAPSHOT.jar`
 
+## 📁 Project Structure
+
+```
+SnippetOrganizer/
+├── src/
+│   ├── main/java/com/snippetorganizer/
+│   │   ├── App.java
+│   │   ├── SnippetManager.java
+│   │   ├── Snippet.java
+│   │   ├── SnippetCollection.java
+│   │   ├── SnippetComponent.java
+│   │   ├── SnippetFactory.java
+│   │   ├── SnippetIterator.java
+│   │   ├── SnippetException.java
+│   │   ├── SnippetLogger.java
+│   │   ├── SnippetAnalyzer.java
+│   │   └── SnippetExporter.java
+│   └── test/java/
+│       ├── SnippetManagerTest.java
+│       ├── SnippetTest.java
+│       ├── SnippetCollectionTest.java
+│       ├── SnippetIteratorTest.java
+│       ├── SnippetLoggerTest.java
+│       ├── SnippetAnalyzerTest.java
+│       └── SnippetExporterTest.java
+├── target/                        
+├── pom.xml                        
+├── .gitignore                     
+└── README.md                      
+data/                           
+   ├── snippets.json              
+   ├── snippet_organizer.log      
+   └── exported_*.txt             
+```
+
 ## 📝 Usage Examples
 
-### Adding a Snippet
+### Adding a Snippet with Tags and Description
 ```shell
-Title: Quick Sort
+Title: Quick Sort Algorithm
 Language: Java
+Description: Efficient sorting algorithm with O(n log n) average case complexity
+Tags: sorting, algorithm, java, divide-and-conquer, recursive
 Code:
-public void quickSort(int[] arr) {
-    // Implementation
+public void quickSort(int[] arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
 }
 X
 ```
 
 ### Searching Snippets
 ```shell
+# Keyword search
 Search keyword: sort
+
+# Tag search
+Search by tag: algorithm
 ```
 
-### Exporting Snippets
+### Managing Tags
 ```shell
-Export all snippets to a single file
-Enter output filename: my_snippets.txt
+# View all tags
+Manage tags → View all tags in collection
+
+# Search by tag
+Manage tags → View snippets by tag → Enter: java
+```
+
+### Enhanced Analysis
+```shell
+# Get comprehensive statistics
+Analyze snippets → Enhanced analysis with tag distribution
 ```
 
 **Export Function Details:**
 - Exports all snippets to a single text file
-- Each snippet includes ID, title, language, and full code
+- Each snippet includes ID, title, language, description, tags, and full code
 - Formatted with clear separators between snippets
 - Useful for backup, sharing, or documentation purposes
-- File is created in the current working directory
+- Files are saved in the `data/` directory
 
 **Logging System Details:**
 - All operations are logged with timestamps
-- Log file: `snippet_organizer.log`
+- Log file: `data/snippet_organizer.log`
 - Automatic log rotation (deletes old logs > 1MB)
 - Tracks: snippet additions, edits, deletions, exports, and errors
 - Helps with debugging and audit trails
+
+**Tag System Benefits:**
+- **Better Organization**: Categorize snippets by topic, language, or use case
+- **Easy Retrieval**: Find specific code patterns quickly
+- **Learning Aid**: Tag snippets by difficulty or concept
+- **Team Sharing**: Export snippets by tags for specific projects
 
 **✅ Gif Tutorial**
 
@@ -371,9 +490,9 @@ Enter output filename: my_snippets.txt
 ## 🔧 Configuration
 
 The application uses the following configuration:
-- `snippets.json`: Main data file containing all snippets
-- `snippet_organizer.log`: Log file with operation history
-- Export directory: User-specified (defaults to current directory)
+- `data/snippets.json`: Main data file containing all snippets with tags and descriptions
+- `data/snippet_organizer.log`: Log file with operation history
+- Export directory: `data/` (all exported files are saved here)
 
 ## 📦 Dependencies
 

@@ -1,46 +1,85 @@
 package com.snippetorganizer;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/*
- * Snippet class represents a code snippet with an ID, title, language, and code.
- * It provides methods to get and set these properties, as well as a method to return a string representation of the snippet.
- * Implements SnippetComponent as a leaf node in the Composite Pattern.
+/**
+ * Represents a code snippet with comprehensive metadata and functionality.
+ * @author Sherif Moustafa
+ * @version 1.0
+ * @see SnippetComponent
+ * @see SnippetCollection
  */
 public final class Snippet implements SnippetComponent {
 
+    /** Unique identifier for the snippet */
     private int id;
+    
+    /** Title or name of the snippet */
     private String title;
+    
+    /** Programming language of the snippet */
     private String language;
+    
+    /** The actual code content */
     private String code;
+    
+    /** Set of tags for categorization */
+    private Set<String> tags;
+    
+    /** Optional description of the snippet */
+    private String description;
 
-    /*
-     * Default constructor for Snippet.
-     * Initializes the snippet with default values.
-     * @param id the ID of the snippet
-     * @param title the title of the snippet
-     * @param language the programming language of the snippet
-     * @param code the code of the snippet
+    /**
+     * Constructs a new Snippet with basic information.
+     * @param id the unique identifier for the snippet (must be non-negative)
+     * @param title the title of the snippet (must not be null or empty)
+     * @param language the programming language of the snippet (must not be null or empty)
+     * @param code the actual code content (must not be null or empty)
+     * @throws IllegalArgumentException if any parameter is invalid
      */
     public Snippet(int id, String title, String language, String code) {
         this.id = id;
         setTitle(title);
         setLanguage(language);
         setCode(code);
+        this.tags = new HashSet<>();
+        this.description = "";
     }
 
-    /*
-     * Get the code of the snippet
-     * @return the code of the snippet
+    /**
+     * Constructs a new Snippet with complete information including tags and description.
+     * @param id the unique identifier for the snippet (must be non-negative)
+     * @param title the title of the snippet (must not be null or empty)
+     * @param language the programming language of the snippet (must not be null or empty)
+     * @param code the actual code content (must not be null or empty)
+     * @param tags the tags for categorization (can be null or empty)
+     * @param description the description of the snippet (can be null or empty)
+     * @throws IllegalArgumentException if required parameters are invalid
+     */
+    public Snippet(int id, String title, String language, String code, Set<String> tags, String description) {
+        this.id = id;
+        setTitle(title);
+        setLanguage(language);
+        setCode(code);
+        setTags(tags);
+        setDescription(description);
+    }
+
+    /**
+     * Gets the code content of the snippet.
+     * @return the code content of the snippet
      */
     public String getCode() {
         return code;
     }
 
-    /*
-     * Set the code of the snippet.
-     * @param code the code to set
+    /**
+     * Sets the code content of the snippet.
+     * @param code the code content to set (must not be null or empty)
+     * @throws IllegalArgumentException if the code is null or empty
      */
     public void setCode(String code) {
         if (code == null || code.trim().isEmpty()) {
@@ -49,16 +88,18 @@ public final class Snippet implements SnippetComponent {
         this.code = code;
     }
 
-    /*
-     * Get the ID of the snippet.
+    /**
+     * Gets the unique identifier of the snippet.
+     * @return the ID of the snippet
      */
     public int getId() {
         return id;
     }
 
-    /*
-     * Set the ID of the snippet.
-     * @param id the ID to set
+    /**
+     * Sets the unique identifier of the snippet.
+     * @param id the ID to set (must be non-negative)
+     * @throws IllegalArgumentException if the ID is negative
      */
     public void setId(int id) {
         if (id < 0) {
@@ -67,17 +108,18 @@ public final class Snippet implements SnippetComponent {
         this.id = id;
     }
 
-    /*
-     * Get the title of the snippet.
+    /**
+     * Gets the title of the snippet.
      * @return the title of the snippet
      */
     public String getTitle() {
         return title;
     } 
 
-    /*
-     * Set the title of the snippet.
-     *  @param title the title to set
+    /**
+     * Sets the title of the snippet.
+     * @param title the title to set (must not be null or empty)
+     * @throws IllegalArgumentException if the title is null or empty
      */
     public void setTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
@@ -86,16 +128,17 @@ public final class Snippet implements SnippetComponent {
         this.title = title;
     }
     
-    /*
-     * Get the language of the snippet.
+    /**
+     * Gets the programming language of the snippet.
+     * @return the programming language of the snippet
      */
     public String getLanguage() {
         return language;
     }
 
-    /*
-     * Set the language of the snippet.
-     * @param language the language to set
+    /**
+     * Sets the programming language of the snippet.
+     * @param language the programming language to set (must not be null or empty)
      * @throws IllegalArgumentException if the language is null or empty
      */
     public void setLanguage(String language) {
@@ -105,60 +148,159 @@ public final class Snippet implements SnippetComponent {
         this.language = language;
     }
 
+    /**
+     * Gets a copy of the tags associated with this snippet.
+     * @return a new set containing all tags of the snippet
+     */
+    public Set<String> getTags() {
+        return new HashSet<>(tags);
+    }
+
+    /**
+     * Sets the tags for this snippet.
+     * @param tags the tags to set (can be null, in which case an empty set is used)
+     */
+    public void setTags(Set<String> tags) {
+        this.tags = tags != null ? new HashSet<>(tags) : new HashSet<>();
+    }
+
+    /**
+     * Adds a tag to this snippet.
+     * @param tag the tag to add (null or empty tags are ignored)
+     */
+    public void addTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            this.tags.add(tag.trim().toLowerCase());
+        }
+    }
+
+    /**
+     * Removes a tag from this snippet.
+     * @param tag the tag to remove
+     */
+    public void removeTag(String tag) {
+        this.tags.remove(tag.toLowerCase());
+    }
+
+    /**
+     * Checks if this snippet has a specific tag.
+     * @param tag the tag to check for
+     * @return true if the snippet has the tag, false otherwise
+     */
+    public boolean hasTag(String tag) {
+        return this.tags.contains(tag.toLowerCase());
+    }
+
+    /**
+     * Gets the description of this snippet.
+     * @return the description of the snippet (never null, may be empty)
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description of this snippet.
+     * @param description the description to set (null is converted to empty string)
+     */
+    public void setDescription(String description) {
+        this.description = description != null ? description : "";
+    }
+
     // Composite Pattern Implementation
+    /**
+     * Gets the name of this component (returns the snippet title).
+     * @return the title of the snippet
+     */
     @JsonIgnore
     @Override
     public String getName() {
         return title;
     }
 
+    /**
+     * Gets all snippets in this component (returns a list containing only this snippet).
+     * @return a list containing only this snippet
+     */
     @JsonIgnore
     @Override
     public List<Snippet> getAllSnippets() {
         return List.of(this);
     }
 
+    /**
+     * Adds a snippet to this component (not supported for leaf nodes).
+     * @param snippet the snippet to add (ignored)
+     * @throws UnsupportedOperationException always thrown for leaf nodes
+     */
     @JsonIgnore
     @Override
     public void addSnippet(Snippet snippet) {
         throw new UnsupportedOperationException("Cannot add snippet to individual snippet");
     }
 
+    /**
+     * Removes a snippet from this component (not supported for leaf nodes).
+     * @param snippet the snippet to remove (ignored)
+     * @throws UnsupportedOperationException always thrown for leaf nodes
+     */
     @JsonIgnore
     @Override
     public void removeSnippet(Snippet snippet) {
         throw new UnsupportedOperationException("Cannot remove snippet from individual snippet");
     }
 
+    /**
+     * Gets the snippet count for this component (always returns 1 for leaf nodes).
+     * @return always returns 1 for individual snippets
+     */
     @JsonIgnore
     @Override
     public int getSnippetCount() {
         return 1;
     }
 
+    /**
+     * Checks if this component is empty (always returns false for leaf nodes).
+     * @return always returns false for individual snippets
+     */
     @JsonIgnore
     @Override
     public boolean isEmpty() {
         return false;
     }
 
+    /**
+     * Displays information about this snippet.
+     */
     @JsonIgnore
     @Override
     public void display() {
         System.out.println(this.toString());
     }
 
-    /*
-     * Override the toString method to provide a string representation of the Snippet object.
-     * @return a string representation of the Snippet object
+    /**
+     * Returns a string representation of this snippet.
+     * @return a formatted string representation of the snippet
      */
     @Override
     public String toString() {
-        return String.format("""
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("""
             Snippet ID: %d
             Title: %s
-            Language: %s
-            Code:
-            %s""", id, title, language, code);
+            Language: %s""", id, title, language));
+        
+        if (!description.isEmpty()) {
+            sb.append(String.format("\nDescription: %s", description));
+        }
+        
+        if (!tags.isEmpty()) {
+            sb.append(String.format("\nTags: %s", String.join(", ", tags)));
+        }
+        
+        sb.append(String.format("\nCode:\n%s", code));
+        
+        return sb.toString();
     }
 }
