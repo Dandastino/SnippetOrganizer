@@ -12,13 +12,9 @@ All application data is stored in the `data/` directory:
 
 ## User Experience (Step-by-step)
 
-The app can be used via console (CLI).
+The Snippet Organizer is a command-line application. When you start the app, you'll see a main menu:
 
-**Phase 1: Application Start**
- 
-When the user starts the app, a main menu appears:
-
-```shell
+```bash
 --- CODE SNIPPET ORGANIZER ---
 1. Add new snippet
 2. Search snippets
@@ -31,90 +27,131 @@ When the user starts the app, a main menu appears:
 Select an option:
 ```
 
-**Phase 2: Adding a Snippet**
+### Option 0: Close Application
+- Exits the program.
 
-You can add a snippet with just a title, language, and code, or provide optional tags and a description. 
+---
 
-User selects 1 → App asks:
+### Option 1: Add New Snippet
+- Prompts for **Title**, **Language**, optional **Description**, and optional **Tags** (comma-separated).
+- Prompts for code input (multi-line, ends with `X` on a new line).
+- Saves the snippet to `data/snippets.json`.
 
-```shell
-Title:
-> Bubble Sort Java
-
-Language:
-> Java
-
-Description (optional):
-> Efficient sorting algorithm with O(n²) complexity
-
-Tags (comma-separated, optional):
-> sorting, algorithm, java, bubble-sort
-
+**Example:**
+```bash
+Title: Bubble Sort Java
+Language: Java
+Description (optional): Efficient sorting algorithm with O(n²) complexity
+Tags (comma-separated, optional): sorting, algorithm, java, bubble-sort
 Enter the code (end with "X" on a new line):
-> for (int i = 0; i < arr.length; i++) {
->     ...
-> }
-> X
+for (int i = 0; i < arr.length; i++) {
+    ...
+}
+X
 ```
 
-The snippet is saved in a file, `data/snippets.json`, with its metadata, tags, and description.
+---
 
-**Phase 3: Searching Snippets**
-User selects 2 → Can search by:
+### Option 2: Search Snippets
+- Choose to search by **keyword** (searches title, code, language, tags, description) or by **tag**.
+- Displays matching snippets with all metadata.
 
-- **Keyword Search**: Search across title, code, language, tags, and description
-- **Tag Search**: Find snippets by specific tags
-
-Example:
-
-```shell
+**Example:**
+```bash
 Search options:
 1. Search by keyword
 2. Search by tag
 Select search type: 1
-
 Enter search keyword: sort
 ```
+*Shows all snippets matching "sort".*
 
-App shows:
+---
 
-```shell
-Found snippet:
-ID: 1
-Title: Bubble Sort Java
-Language: Java
-Description: Efficient sorting algorithm with O(n²) complexity
-Tags: sorting, algorithm, java, bubble-sort
-Code:
-for (int i = 0; i < arr.length; i++) {
+### Option 3: Edit Snippet
+- Lists all snippets with IDs.
+- Prompts for the ID of the snippet to edit.
+- For each field (title, language, code, description, tags), asks if you want to edit it:
+  - If yes, prompts for the new value (multi-line for code, comma-separated for tags).
+  - If no, leaves the field unchanged.
+- Only updates the fields you choose.
+- Saves and confirms changes, or notifies if no changes were made.
+
+**Example:**
+```bash
+Enter snippet ID to edit: 2
+Edit title? (y/n): y
+New title: Improved Bubble Sort
+Edit language? (y/n): n
+Edit code? (y/n): y
+Enter the new code (end with "X"):
+for (int i = 0; i < arr.length - 1; i++) {
     ...
 }
----------------------------
+X
+Edit description? (y/n): n
+Edit tags? (y/n): y
+New tags (comma-separated, leave blank for none): sorting, java
+Snippet edited successfully!
 ```
 
-**Phase 4: Edit / Delete**
+---
 
-Options 3 and 4: User chooses a snippet, modifies or deletes it. The app handles everything by updating the file.
+### Option 4: Delete Snippet
+- Lists all snippets with IDs.
+- Prompts for the ID of the snippet to delete.
+- Confirms deletion.
 
-**Phase 5: Export Snippets**
+---
 
-Export all snippets to a single txt file with detailed formatting including tags and descriptions. Files are saved in the `data/` directory. You can also export by language or as a summary report.
+### Option 5: Export Snippets
+- Prompts for an output filename.
+- Exports all snippets (with tags and descriptions) to a formatted text file in the `data/` directory.
 
-**Phase 6: Analyze Snippets**
+---
 
-Comprehensive analysis including:
-- Language distribution
-- Tag distribution and statistics
-- Description statistics
-- Code length analysis
-- Longest/shortest snippets
+### Option 6: Analyze Snippets
+- Provides statistics:
+  - Language distribution
+  - Tag distribution
+  - Description statistics
+  - Code length analysis
+  - Longest/shortest snippets
+  
+- Offers options to:
+  - View snippets by language
+  - View snippets with/without descriptions
+  - View long snippets
+  - Export a summary report (prompts for filename)
+  - Export snippets by language (prompts for filename)
 
-**Phase 7: Manage Tags**
+---
 
-- View all tags in the collection
-- Add tags to existing snippets
-- Remove tags from snippets
-- Search snippets by specific tags
+### Option 7: Manage Tags
+- View all tags in the collection.
+- Add tags to existing snippets:
+  - Select snippet by ID, enter new tags.
+- Remove tags from snippets:
+  - Select snippet by ID, select tags to remove.
+
+---
+
+**Tip:** All actions are logged to `data/snippet_organizer.log`. Data is always saved in `data/snippets.json`.
+
+---
+
+### Summary Table
+
+| Option | Action                | Description                                      |
+|--------|-----------------------|--------------------------------------------------|
+| 0      | Close application     | Exit the program                                 |
+| 1      | Add new snippet       | Add a code snippet with metadata                 |
+| 2      | Search snippets       | Search by keyword or tag                         |
+| 3      | Edit snippet          | Edit any field of an existing snippet            |
+| 4      | Delete snippet        | Remove a snippet by ID                           |
+| 5      | Export snippets       | Export all snippets to a text file               |
+| 6      | Analyze snippets      | View statistics and export analysis              |
+| 7      | Manage tags           | Add/remove/view tags for snippets                |
 
 ## Advanced Features
 

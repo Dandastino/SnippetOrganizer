@@ -123,28 +123,33 @@ public class App {
      * @param manager the SnippetManager instance for searching snippets
      */
     private static void handleSearchSnippets(Scanner scanner, SnippetManager manager) {
-        System.out.println("Search options:");
-        System.out.println("1. Search by keyword");
-        System.out.println("2. Search by tag");
-        System.out.print("Select search type: ");
-        
-        try {
-            int searchChoice = getValidIntInput(scanner, "Search choice");
-            switch (searchChoice) {
-                case 1 -> {
-                    System.out.print("Enter search keyword: ");
-                    String keyword = scanner.nextLine();
-                    manager.searchSnippets(keyword);
+        while (true) {
+            System.out.println("Search options:");
+            System.out.println("1. Search by keyword");
+            System.out.println("2. Search by tag");
+            System.out.print("Select search type (or blank to cancel): ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) return;
+            try {
+                int searchChoice = Integer.parseInt(input);
+                switch (searchChoice) {
+                    case 1 -> {
+                        System.out.print("Enter search keyword: ");
+                        String keyword = scanner.nextLine();
+                        manager.searchSnippets(keyword);
+                        return;
+                    }
+                    case 2 -> {
+                        System.out.print("Enter tag to search: ");
+                        String tag = scanner.nextLine();
+                        manager.searchByTag(tag);
+                        return;
+                    }
+                    default -> System.out.println("Invalid search option. Please enter 1 or 2.");
                 }
-                case 2 -> {
-                    System.out.print("Enter tag to search: ");
-                    String tag = scanner.nextLine();
-                    manager.searchByTag(tag);
-                }
-                default -> System.out.println("Invalid search option.");
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number (1 or 2).");
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -155,25 +160,119 @@ public class App {
      * @param manager the SnippetManager instance for editing snippets
      */
     private static void handleEditSnippet(Scanner scanner, SnippetManager manager) {
-        try {
-            manager.listSnippets();
-            System.out.print("Enter snippet ID to edit: ");
-            int snippetId = getValidIntInput(scanner, "Snippet ID");
-
-            System.out.print("New title: ");
-            String newTitle = getNonEmptyInput(scanner, "Title");
-
-            System.out.print("New language: ");
-            String newLanguage = getNonEmptyInput(scanner, "Language");
-
-            System.out.println("Enter the new code (end with \"X\"): ");
-            String newCode = getCodeInput(scanner);
-            
-            manager.editSnippet(snippetId, newTitle, newLanguage, newCode);
-            System.out.println("Snippet edited successfully!");
-            
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
+        manager.listSnippets();
+        Snippet snippetToEdit = null;
+        while (snippetToEdit == null) {
+            System.out.print("Enter snippet ID to edit (or blank to cancel): ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) return;
+            try {
+                int snippetId = Integer.parseInt(input);
+                for (Snippet snippet : manager.getAllSnippets()) {
+                    if (snippet.getId() == snippetId) {
+                        snippetToEdit = snippet;
+                        break;
+                    }
+                }
+                if (snippetToEdit == null) {
+                    System.out.println("No snippet found with ID: " + snippetId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+        boolean changed = false;
+        // Title
+        while (true) {
+            System.out.print("Edit title? (y/n): ");
+            String ans = scanner.nextLine().trim();
+            if (ans.equalsIgnoreCase("y")) {
+                System.out.print("New title: ");
+                String newTitle = getNonEmptyInput(scanner, "Title");
+                snippetToEdit.setTitle(newTitle);
+                changed = true;
+                break;
+            } else if (ans.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
+            }
+        }
+        // Language
+        while (true) {
+            System.out.print("Edit language? (y/n): ");
+            String ans = scanner.nextLine().trim();
+            if (ans.equalsIgnoreCase("y")) {
+                System.out.print("New language: ");
+                String newLanguage = getNonEmptyInput(scanner, "Language");
+                snippetToEdit.setLanguage(newLanguage);
+                changed = true;
+                break;
+            } else if (ans.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
+            }
+        }
+        // Code
+        while (true) {
+            System.out.print("Edit code? (y/n): ");
+            String ans = scanner.nextLine().trim();
+            if (ans.equalsIgnoreCase("y")) {
+                System.out.println("Enter the new code (end with \"X\"): ");
+                String newCode = getCodeInput(scanner);
+                snippetToEdit.setCode(newCode);
+                changed = true;
+                break;
+            } else if (ans.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
+            }
+        }
+        // Description
+        while (true) {
+            System.out.print("Edit description? (y/n): ");
+            String ans = scanner.nextLine().trim();
+            if (ans.equalsIgnoreCase("y")) {
+                System.out.print("New description (leave blank for none): ");
+                String newDescription = scanner.nextLine();
+                snippetToEdit.setDescription(newDescription);
+                changed = true;
+                break;
+            } else if (ans.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
+            }
+        }
+        // Tags
+        while (true) {
+            System.out.print("Edit tags? (y/n): ");
+            String ans = scanner.nextLine().trim();
+            if (ans.equalsIgnoreCase("y")) {
+                System.out.print("New tags (comma-separated, leave blank for none): ");
+                String tagsInput = scanner.nextLine().trim();
+                Set<String> newTags = parseTags(tagsInput);
+                snippetToEdit.setTags(newTags);
+                changed = true;
+                break;
+            } else if (ans.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
+            }
+        }
+        if (changed) {
+            try {
+                manager.getClass().getDeclaredMethod("saveSnippets").setAccessible(true);
+                manager.getClass().getDeclaredMethod("saveSnippets").invoke(manager);
+                System.out.println("Snippet edited successfully!");
+            } catch (Exception e) {
+                System.out.println("Error saving snippet: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No changes made to the snippet.");
         }
     }
 
@@ -184,14 +283,29 @@ public class App {
      * @param manager the SnippetManager instance for deleting snippets
      */
     private static void handleDeleteSnippet(Scanner scanner, SnippetManager manager) {
-        try {
-            manager.listSnippets();
-            System.out.print("Enter snippet ID to delete: ");
-            int snippetId = getValidIntInput(scanner, "Snippet ID");
-            manager.deleteSnippet(snippetId);
-            System.out.println("Snippet deleted successfully!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
+        manager.listSnippets();
+        while (true) {
+            System.out.print("Enter snippet ID to delete (or blank to cancel): ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) return;
+            try {
+                int snippetId = Integer.parseInt(input);
+                boolean found = false;
+                for (Snippet snippet : manager.getAllSnippets()) {
+                    if (snippet.getId() == snippetId) {
+                        manager.deleteSnippet(snippetId);
+                        System.out.println("Snippet deleted successfully!");
+                        return;
+                    }
+                }
+                if (!found) {
+                    System.out.println("No snippet found with ID: " + snippetId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
         }
     }
 
@@ -202,13 +316,17 @@ public class App {
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void handleExportSnippets(Scanner scanner, SnippetManager manager) {
-        System.out.print("Enter output filename: ");
-        String filename = scanner.nextLine();
-        try {
-            SnippetExporter.exportToText(manager.getAllSnippets(), filename);
-            System.out.println("Snippets exported successfully!");
-        } catch (IOException e) {
-            System.out.println("Error exporting snippets: " + e.getMessage());
+        while (true) {
+            System.out.print("Enter output filename (or blank to cancel): ");
+            String filename = scanner.nextLine().trim();
+            if (filename.isEmpty()) return;
+            try {
+                SnippetExporter.exportToText(manager.getAllSnippets(), filename);
+                System.out.println("Snippets exported successfully!");
+                return;
+            } catch (IOException e) {
+                System.out.println("Error exporting snippets: " + e.getMessage());
+            }
         }
     }
 
@@ -248,7 +366,6 @@ public class App {
         System.out.println("\nTag management options:");
         System.out.println("1. Add tag to snippet");
         System.out.println("2. Remove tag from snippet");
-        System.out.println("3. View snippets by tag");
         System.out.print("Select option (or press Enter to go back): ");
         
         String tagChoice = scanner.nextLine().trim();
@@ -258,7 +375,6 @@ public class App {
                 switch (tagChoiceNum) {
                     case 1 -> handleAddTagToSnippet(scanner, manager);
                     case 2 -> handleRemoveTagFromSnippet(scanner, manager);
-                    case 3 -> handleViewSnippetsByTag(scanner, manager);
                     default -> System.out.println("Invalid option.");
                 }
             } catch (NumberFormatException e) {
@@ -277,12 +393,43 @@ public class App {
      */
     private static void handleAddTagToSnippet(Scanner scanner, SnippetManager manager) {
         manager.listSnippets();
-        System.out.print("Enter snippet ID: ");
-        // int snippetId = getValidIntInput(scanner, "Snippet ID");
-        System.out.print("Enter tag to add: ");
-        String tagToAdd = scanner.nextLine().trim();
-        if (!tagToAdd.isEmpty()) {
-            System.out.println("Tag management not fully implemented yet.");
+        Snippet snippetToEdit = null;
+        while (snippetToEdit == null) {
+            System.out.print("Enter snippet ID (or blank to cancel): ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) return;
+            try {
+                int snippetId = Integer.parseInt(input);
+                for (Snippet snippet : manager.getAllSnippets()) {
+                    if (snippet.getId() == snippetId) {
+                        snippetToEdit = snippet;
+                        break;
+                    }
+                }
+                if (snippetToEdit == null) {
+                    System.out.println("No snippet found with ID: " + snippetId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+        while (true) {
+            System.out.print("Enter tag to add (or blank to cancel): ");
+            String tagToAdd = scanner.nextLine().trim();
+            if (tagToAdd.isEmpty()) return;
+            if (snippetToEdit.getTags().contains(tagToAdd.toLowerCase())) {
+                System.out.println("Tag already exists for this snippet.");
+                continue;
+            }
+            snippetToEdit.addTag(tagToAdd);
+            try {
+                manager.getClass().getDeclaredMethod("saveSnippets").setAccessible(true);
+                manager.getClass().getDeclaredMethod("saveSnippets").invoke(manager);
+                System.out.println("Tag added successfully!");
+            } catch (Exception e) {
+                System.out.println("Error saving tag: " + e.getMessage());
+            }
+            break;
         }
     }
 
@@ -294,26 +441,48 @@ public class App {
      */
     private static void handleRemoveTagFromSnippet(Scanner scanner, SnippetManager manager) {
         manager.listSnippets();
-        System.out.print("Enter snippet ID: ");
-        // int snippetId = getValidIntInput(scanner, "Snippet ID");
-        System.out.print("Enter tag to remove: ");
-        String tagToRemove = scanner.nextLine().trim();
-        if (!tagToRemove.isEmpty()) {
-            System.out.println("Tag management not fully implemented yet.");
+        Snippet snippetToEdit = null;
+        while (snippetToEdit == null) {
+            System.out.print("Enter snippet ID (or blank to cancel): ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) return;
+            try {
+                int snippetId = Integer.parseInt(input);
+                for (Snippet snippet : manager.getAllSnippets()) {
+                    if (snippet.getId() == snippetId) {
+                        snippetToEdit = snippet;
+                        break;
+                    }
+                }
+                if (snippetToEdit == null) {
+                    System.out.println("No snippet found with ID: " + snippetId);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
         }
-    }
-
-    /**
-     * Handles viewing snippets by a specific tag.
-     * 
-     * @param scanner the Scanner object for reading user input
-     * @param manager the SnippetManager instance for searching snippets
-     */
-    private static void handleViewSnippetsByTag(Scanner scanner, SnippetManager manager) {
-        System.out.print("Enter tag to view snippets: ");
-        String tagToView = scanner.nextLine().trim();
-        if (!tagToView.isEmpty()) {
-            manager.searchByTag(tagToView);
+        while (true) {
+            if (snippetToEdit.getTags().isEmpty()) {
+                System.out.println("This snippet has no tags.");
+                return;
+            }
+            System.out.println("Current tags: " + String.join(", ", snippetToEdit.getTags()));
+            System.out.print("Enter tag to remove (or blank to cancel): ");
+            String tagToRemove = scanner.nextLine().trim();
+            if (tagToRemove.isEmpty()) return;
+            if (!snippetToEdit.getTags().contains(tagToRemove.toLowerCase())) {
+                System.out.println("Tag not found for this snippet.");
+                continue;
+            }
+            snippetToEdit.removeTag(tagToRemove);
+            try {
+                manager.getClass().getDeclaredMethod("saveSnippets").setAccessible(true);
+                manager.getClass().getDeclaredMethod("saveSnippets").invoke(manager);
+                System.out.println("Tag removed successfully!");
+            } catch (Exception e) {
+                System.out.println("Error saving tag: " + e.getMessage());
+            }
+            break;
         }
     }
 
@@ -324,18 +493,25 @@ public class App {
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void offerLanguageAnalysis(Scanner scanner, SnippetManager manager) {
-        System.out.print("\nWould you like to see snippets by language? (y/n): ");
-        String showByLanguage = scanner.nextLine();
-        if ("y".equalsIgnoreCase(showByLanguage)) {
-            System.out.print("Enter language to filter: ");
-            String language = scanner.nextLine();
-            var snippetsByLanguage = SnippetAnalyzer.findSnippetsByLanguage(manager.getSnippetComponent(), language);
-            if (snippetsByLanguage.isEmpty()) {
-                System.out.println("No snippets found for language: " + language);
+        while (true) {
+            System.out.print("\nWould you like to see snippets by language? (y/n): ");
+            String showByLanguage = scanner.nextLine().trim();
+            if (showByLanguage.equalsIgnoreCase("y")) {
+                System.out.print("Enter language to filter: ");
+                String language = scanner.nextLine();
+                var snippetsByLanguage = SnippetAnalyzer.findSnippetsByLanguage(manager.getSnippetComponent(), language);
+                if (snippetsByLanguage.isEmpty()) {
+                    System.out.println("No snippets found for language: " + language);
+                } else {
+                    System.out.println("Found " + snippetsByLanguage.size() + " snippets in " + language + ":");
+                    snippetsByLanguage.forEach(snippet -> 
+                        System.out.println("  - " + snippet.getTitle()));
+                }
+                break;
+            } else if (showByLanguage.equalsIgnoreCase("n")) {
+                break;
             } else {
-                System.out.println("Found " + snippetsByLanguage.size() + " snippets in " + language + ":");
-                snippetsByLanguage.forEach(snippet -> 
-                    System.out.println("  - " + snippet.getTitle()));
+                System.out.println("Please enter 'y' or 'n'.");
             }
         }
     }
@@ -347,16 +523,23 @@ public class App {
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void offerDescriptionAnalysis(Scanner scanner, SnippetManager manager) {
-        System.out.print("\nWould you like to see snippets with descriptions? (y/n): ");
-        String showWithDescriptions = scanner.nextLine();
-        if ("y".equalsIgnoreCase(showWithDescriptions)) {
-            var snippetsWithDescriptions = SnippetAnalyzer.getSnippetsWithDescriptions(manager.getSnippetComponent());
-            if (snippetsWithDescriptions.isEmpty()) {
-                System.out.println("No snippets found with descriptions.");
+        while (true) {
+            System.out.print("\nWould you like to see snippets with descriptions? (y/n): ");
+            String showWithDescriptions = scanner.nextLine().trim();
+            if (showWithDescriptions.equalsIgnoreCase("y")) {
+                var snippetsWithDescriptions = SnippetAnalyzer.getSnippetsWithDescriptions(manager.getSnippetComponent());
+                if (snippetsWithDescriptions.isEmpty()) {
+                    System.out.println("No snippets found with descriptions.");
+                } else {
+                    System.out.println("Found " + snippetsWithDescriptions.size() + " snippets with descriptions:");
+                    snippetsWithDescriptions.forEach(snippet -> 
+                        System.out.println("  - " + snippet.getTitle() + ": " + snippet.getDescription()));
+                }
+                break;
+            } else if (showWithDescriptions.equalsIgnoreCase("n")) {
+                break;
             } else {
-                System.out.println("Found " + snippetsWithDescriptions.size() + " snippets with descriptions:");
-                snippetsWithDescriptions.forEach(snippet -> 
-                    System.out.println("  - " + snippet.getTitle() + ": " + snippet.getDescription()));
+                System.out.println("Please enter 'y' or 'n'.");
             }
         }
     }
@@ -368,16 +551,23 @@ public class App {
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void offerCodeLengthAnalysis(Scanner scanner, SnippetManager manager) {
-        System.out.print("\nWould you like to see long snippets (>100 chars)? (y/n): ");
-        String showLongSnippets = scanner.nextLine();
-        if ("y".equalsIgnoreCase(showLongSnippets)) {
-            var longSnippets = SnippetAnalyzer.getSnippetsWithCodeLongerThan(manager.getSnippetComponent(), 100);
-            if (longSnippets.isEmpty()) {
-                System.out.println("No snippets found with code longer than 100 characters.");
+        while (true) {
+            System.out.print("\nWould you like to see long snippets (>100 chars)? (y/n): ");
+            String showLongSnippets = scanner.nextLine().trim();
+            if (showLongSnippets.equalsIgnoreCase("y")) {
+                var longSnippets = SnippetAnalyzer.getSnippetsWithCodeLongerThan(manager.getSnippetComponent(), 100);
+                if (longSnippets.isEmpty()) {
+                    System.out.println("No snippets found with code longer than 100 characters.");
+                } else {
+                    System.out.println("Found " + longSnippets.size() + " snippets with code > 100 chars:");
+                    longSnippets.forEach(snippet -> 
+                        System.out.println("  - " + snippet.getTitle() + " (" + snippet.getCode().length() + " chars)"));
+                }
+                break;
+            } else if (showLongSnippets.equalsIgnoreCase("n")) {
+                break;
             } else {
-                System.out.println("Found " + longSnippets.size() + " snippets with code > 100 chars:");
-                longSnippets.forEach(snippet -> 
-                    System.out.println("  - " + snippet.getTitle() + " (" + snippet.getCode().length() + " chars)"));
+                System.out.println("Please enter 'y' or 'n'.");
             }
         }
     }
@@ -389,30 +579,43 @@ public class App {
      * @param manager the SnippetManager instance for accessing snippets
      */
     private static void offerExportOptions(Scanner scanner, SnippetManager manager) {
-        System.out.print("\nWould you like to export a summary report? (y/n): ");
-        String exportReport = scanner.nextLine();
-        if ("y".equalsIgnoreCase(exportReport)) {
-            System.out.print("Enter report filename: ");
-            String reportFilename = scanner.nextLine();
-            try {
-                SnippetExporter.exportSummaryReport(manager.getSnippetComponent(), reportFilename);
-                System.out.println("Summary report exported successfully!");
-            } catch (IOException e) {
-                System.out.println("Error exporting report: " + e.getMessage());
+        while (true) {
+            System.out.print("\nWould you like to export a summary report? (y/n): ");
+            String exportReport = scanner.nextLine().trim();
+            if (exportReport.equalsIgnoreCase("y")) {
+                System.out.print("Enter report filename: ");
+                String reportFilename = scanner.nextLine();
+                try {
+                    SnippetExporter.exportSummaryReport(manager.getSnippetComponent(), reportFilename);
+                    System.out.println("Summary report exported successfully!");
+                } catch (IOException e) {
+                    System.out.println("Error exporting report: " + e.getMessage());
+                }
+                break;
+            } else if (exportReport.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
             }
         }
-        
         // Offer language-based export
-        System.out.print("\nWould you like to export by language? (y/n): ");
-        String exportByLanguage = scanner.nextLine();
-        if ("y".equalsIgnoreCase(exportByLanguage)) {
-            System.out.print("Enter base filename (e.g., 'snippets'): ");
-            String baseFilename = scanner.nextLine();
-            try {
-                SnippetExporter.exportByLanguage(manager.getSnippetComponent(), baseFilename);
-                System.out.println("Language-based export completed successfully!");
-            } catch (IOException e) {
-                System.out.println("Error exporting by language: " + e.getMessage());
+        while (true) {
+            System.out.print("\nWould you like to export by language? (y/n): ");
+            String exportByLanguage = scanner.nextLine().trim();
+            if (exportByLanguage.equalsIgnoreCase("y")) {
+                System.out.print("Enter base filename (e.g., 'snippets'): ");
+                String baseFilename = scanner.nextLine();
+                try {
+                    SnippetExporter.exportByLanguage(manager.getSnippetComponent(), baseFilename);
+                    System.out.println("Language-based export completed successfully!");
+                } catch (IOException e) {
+                    System.out.println("Error exporting by language: " + e.getMessage());
+                }
+                break;
+            } else if (exportByLanguage.equalsIgnoreCase("n")) {
+                break;
+            } else {
+                System.out.println("Please enter 'y' or 'n'.");
             }
         }
     }
@@ -466,11 +669,14 @@ public class App {
      * @throws IllegalArgumentException if the input is empty
      */
     private static String getNonEmptyInput(Scanner scanner, String fieldName) {
-        String input = scanner.nextLine().trim();
-        if (input.isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be empty");
+        while (true) {
+            String input = scanner.nextLine().trim();
+            if (!input.isEmpty()) {
+                return input;
+            }
+            System.out.println(fieldName + " cannot be empty. Please enter a value.");
+            System.out.print(fieldName + ": ");
         }
-        return input;
     }
 
     /**

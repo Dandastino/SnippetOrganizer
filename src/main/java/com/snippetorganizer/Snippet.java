@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a code snippet with comprehensive metadata and functionality.
@@ -53,7 +55,16 @@ public final class Snippet implements SnippetComponent {
      * @param description the description of the snippet (can be null or empty)
      * @throws IllegalArgumentException if required parameters are invalid
      */
-    public Snippet(int id, String title, String language, String code, Set<String> tags, String description) {
+    // telling Jakson which constructor to use and how to map JSON fields to constructor parameters. for deserializzation
+    @JsonCreator
+    public Snippet(
+        @JsonProperty("id") int id,
+        @JsonProperty("title") String title,
+        @JsonProperty("language") String language,
+        @JsonProperty("code") String code,
+        @JsonProperty("tags") Set<String> tags,
+        @JsonProperty("description") String description
+    ) {
         this.id = id;
         setTitle(title);
         setLanguage(language);
