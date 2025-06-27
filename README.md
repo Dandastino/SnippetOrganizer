@@ -155,25 +155,6 @@ classDiagram
     class App {
       +main(String[] args) void
     }
-
-    class SnippetManager {
-      -FILE_NAME: String
-      -DATA_DIR: String
-      -file: File
-      -objectMapper: ObjectMapper
-      -snippetComponent: SnippetComponent
-      +SnippetManager()
-      +addSnippet(String, String, String) void
-      +addSnippet(String, String, String, Set~String~, String) void
-      +searchSnippets(String) void
-      +searchByTag(String) void
-      +getAllTags() Set~String~
-      +editSnippet(int, String, String, String) void
-      +deleteSnippet(int) void
-      +getAllSnippets() List~Snippet~
-      +getSnippetComponent() SnippetComponent
-      +getSnippetCount() int
-    }
     
     class SnippetComponent {
       <<interface>>
@@ -213,6 +194,40 @@ classDiagram
       +toString() String
     }
 
+   class SnippetAnalyzer {
+      +analyzeComponent(SnippetComponent) Map
+      +displayAnalysis(SnippetComponent) void
+      +displayEnhancedAnalysis(SnippetComponent) void
+      +getLanguageDistribution(SnippetComponent) Map
+      +getTagDistribution(SnippetComponent) Map
+      +getAverageCodeLength(SnippetComponent) double
+      +getLongestSnippet(SnippetComponent) Snippet
+      +getShortestSnippet(SnippetComponent) Snippet
+      +findSnippetsByLanguage(SnippetComponent, String) List~Snippet~
+      +getSnippetsWithCodeLongerThan(SnippetComponent, int) List~Snippet~
+      +getSnippetsWithDescriptions(SnippetComponent) List~Snippet~
+      +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
+    }
+
+   class SnippetManager {
+      -FILE_NAME: String
+      -DATA_DIR: String
+      -file: File
+      -objectMapper: ObjectMapper
+      -snippetComponent: SnippetComponent
+      +SnippetManager()
+      +addSnippet(String, String, String) void
+      +addSnippet(String, String, String, Set~String~, String) void
+      +searchSnippets(String) void
+      +searchByTag(String) void
+      +getAllTags() Set~String~
+      +editSnippet(int, String, String, String) void
+      +deleteSnippet(int) void
+      +getAllSnippets() List~Snippet~
+      +getSnippetComponent() SnippetComponent
+      +getSnippetCount() int
+    }
+
     class SnippetCollection {
       -snippets: List~Snippet~
       -name: String
@@ -244,21 +259,6 @@ classDiagram
       +exportComponentToText(SnippetComponent, String) void
       +exportByLanguage(SnippetComponent, String) void
       +exportSummaryReport(SnippetComponent, String) void
-    }
-
-   class SnippetAnalyzer {
-      +analyzeComponent(SnippetComponent) Map
-      +displayAnalysis(SnippetComponent) void
-      +displayEnhancedAnalysis(SnippetComponent) void
-      +getLanguageDistribution(SnippetComponent) Map
-      +getTagDistribution(SnippetComponent) Map
-      +getAverageCodeLength(SnippetComponent) double
-      +getLongestSnippet(SnippetComponent) Snippet
-      +getShortestSnippet(SnippetComponent) Snippet
-      +findSnippetsByLanguage(SnippetComponent, String) List~Snippet~
-      +getSnippetsWithCodeLongerThan(SnippetComponent, int) List~Snippet~
-      +getSnippetsWithDescriptions(SnippetComponent) List~Snippet~
-      +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
     }
 
     class SnippetLogger {
