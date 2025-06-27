@@ -239,7 +239,14 @@ classDiagram
       +next() Snippet
     }
 
-    class SnippetAnalyzer {
+    class SnippetExporter {
+      +exportToText(List~Snippet~, String) void
+      +exportComponentToText(SnippetComponent, String) void
+      +exportByLanguage(SnippetComponent, String) void
+      +exportSummaryReport(SnippetComponent, String) void
+    }
+
+   class SnippetAnalyzer {
       +analyzeComponent(SnippetComponent) Map
       +displayAnalysis(SnippetComponent) void
       +displayEnhancedAnalysis(SnippetComponent) void
@@ -254,19 +261,12 @@ classDiagram
       +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
     }
 
-    class SnippetExporter {
-      +exportToText(List~Snippet~, String) void
-      +exportComponentToText(SnippetComponent, String) void
-      +exportByLanguage(SnippetComponent, String) void
-      +exportSummaryReport(SnippetComponent, String) void
-    }
-
     class SnippetLogger {
       +log(String) void
       +logInfo(String) void
       +logError(String, Throwable) void
     }
-    
+
     class SnippetException {
       +SnippetException(String)
       +SnippetException(String, Throwable)
