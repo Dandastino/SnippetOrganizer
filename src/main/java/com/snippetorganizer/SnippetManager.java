@@ -35,26 +35,36 @@ public class SnippetManager {
     /** The main snippet component (collection) for organizing snippets */
     private final SnippetComponent snippetComponent;
 
-    /** Constructs a new SnippetManager and initializes the system. */
+    /**
+     * Constructs a new SnippetManager and initializes the system.
+     */
     public SnippetManager() {
+        this(new File(DATA_DIR, FILE_NAME).getPath());
+    }
+
+    /**
+     * Constructs a new SnippetManager with a custom data file path (for testing).
+     * @param dataFilePath the path to the data file to use
+     */
+    public SnippetManager(String dataFilePath) {
         File dataDir = new File(DATA_DIR);
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
 
-        this.file = new File(dataDir, FILE_NAME);
+        this.file = new File(dataFilePath);
         this.objectMapper = new ObjectMapper();
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.snippetComponent = new SnippetCollection("Main Collection");
 
         try {
-            // Crea il file solo se non esiste
+            // Create the file only if it does not exist
             if (!file.exists()) {
                 file.createNewFile();
                 objectMapper.writeValue(file, new Snippet[0]);
             }
 
-            // Crea il file di log solo se non esiste
+            // Create the log file only if it does not exist
             File logFile = new File(dataDir, "snippet_organizer.log");
             if (!logFile.exists()) {
                 logFile.createNewFile();

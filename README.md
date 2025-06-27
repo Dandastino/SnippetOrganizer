@@ -446,10 +446,22 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
 
 ## Getting Started
 
-1. Clone the repository `git clone https://github.com/Dandastino/SnippetOrganizer.git`
-2. Change the directory `cd SnippetOrganizer`
-3. Build with Maven: `mvn clean install`
-4. Run the application: `java -jar target/demo-1.0-SNAPSHOT.jar`
+1. Clone the repository
+```bash
+git clone https://github.com/Dandastino/SnippetOrganizer.git`
+```
+2. Change the directory 
+```bash
+cd SnippetOrganizer
+```
+3. Build with Maven: 
+```bash
+mvn clean install
+```
+4. Run the application: 
+```bash
+java -jar target/demo-1.0-SNAPSHOT.jar
+```
 
 ## Project Structure
 
@@ -487,9 +499,3 @@ SnippetOrganizer/
 ├── .gitignore                     
 └── README.md                      
 ```
-
-## Usage Examples
-
-### GIF
-
-work in progress..

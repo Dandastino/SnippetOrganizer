@@ -159,6 +159,7 @@ public class App {
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for editing snippets
      */
+    @SuppressWarnings("UseSpecificCatch")
     private static void handleEditSnippet(Scanner scanner, SnippetManager manager) {
         manager.listSnippets();
         Snippet snippetToEdit = null;
@@ -391,6 +392,7 @@ public class App {
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for managing snippets
      */
+    @SuppressWarnings("UseSpecificCatch")
     private static void handleAddTagToSnippet(Scanner scanner, SnippetManager manager) {
         manager.listSnippets();
         Snippet snippetToEdit = null;
@@ -439,6 +441,7 @@ public class App {
      * @param scanner the Scanner object for reading user input
      * @param manager the SnippetManager instance for managing snippets
      */
+    @SuppressWarnings("UseSpecificCatch")
     private static void handleRemoveTagFromSnippet(Scanner scanner, SnippetManager manager) {
         manager.listSnippets();
         Snippet snippetToEdit = null;
@@ -677,26 +680,5 @@ public class App {
             System.out.println(fieldName + " cannot be empty. Please enter a value.");
             System.out.print(fieldName + ": ");
         }
-    }
-
-    /**
-     * Gets and validates integer input from the user.
-     * 
-     * @param scanner the Scanner object for reading user input
-     * @param fieldName the name of the field being requested (for error messages)
-     * @return the validated integer input
-     * @throws IllegalArgumentException if the input is not a valid integer or is negative
-     */
-    private static int getValidIntInput(Scanner scanner, String fieldName) {
-        if (!scanner.hasNextInt()) {
-            scanner.nextLine();
-            throw new IllegalArgumentException("Please enter a valid " + fieldName);
-        }
-        int value = scanner.nextInt();
-        scanner.nextLine();
-        if (value < 0) {
-            throw new IllegalArgumentException(fieldName + " cannot be negative");
-        }
-        return value;
     }
 }

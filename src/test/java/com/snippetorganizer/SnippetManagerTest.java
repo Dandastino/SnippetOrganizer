@@ -1,8 +1,12 @@
 package com.snippetorganizer;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,10 +22,17 @@ import org.junit.jupiter.api.Test;
 class SnippetManagerTest {
 
     private SnippetManager manager;
+    private Path tempFile;
 
     @BeforeEach
-    void setUp() {
-        manager = new SnippetManager();
+    void setUp() throws IOException {
+        tempFile = Files.createTempFile("snippets_test_", ".json");
+        manager = new SnippetManager(tempFile.toString());
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        Files.deleteIfExists(tempFile);
     }
 
     @Test
