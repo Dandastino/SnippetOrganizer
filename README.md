@@ -4,16 +4,11 @@
 
 Create a Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database. Data is saved to files in a dedicated `data/` directory.
 
-## Data Persistence & Logging
-
-- All snippets are stored in `data/snippets.json` as a JSON array. Every add, edit, or delete operation rewrites the entire file to ensure consistency and compatibility with any JSON tool.
-- All actions and errors are logged to `data/snippet_organizer.log`. The log file is automatically rotated if it exceeds 1MB.
-
 ## Data Directory
 
 All application data is stored in the `data/` directory:
-- `snippets.json`: All your code snippets, as a JSON array.
-- `snippet_organizer.log`: Log file with all actions and errors.
+- `snippets.json`: - All snippets are stored here as a JSON array. Every add, edit, or delete operation rewrites the entire file to ensure consistency and compatibility with any JSON tool.
+- `snippet_organizer.log`: All actions and errors are logged to here. The log file is automatically rotated if it exceeds 1MB.
 
 ## User Experience (Step-by-step)
 
@@ -38,7 +33,7 @@ Select an option:
 
 **Phase 2: Adding a Snippet**
 
-You can add a snippet with just a title, language, and code, or provide optional tags and a description. Both options are supported in the CLI and programmatically.
+You can add a snippet with just a title, language, and code, or provide optional tags and a description. 
 
 User selects 1 → App asks:
 
@@ -64,7 +59,7 @@ Enter the code (end with "X" on a new line):
 
 The snippet is saved in a file, `data/snippets.json`, with its metadata, tags, and description.
 
-** Phase 3: Searching Snippets**
+**Phase 3: Searching Snippets**
 User selects 2 → Can search by:
 
 - **Keyword Search**: Search across title, code, language, tags, and description
@@ -143,7 +138,7 @@ All business logic errors are reported as user-friendly messages and logged. The
 
 - The project includes comprehensive unit tests using **JUnit 5**.
 - Tests cover all major features: adding, editing, deleting, searching, tag management, analysis, and error cases.
-- To run tests: use your IDE's test runner or `mvn test` if using Maven.
+- To run tests: use your IDE's test runner or `mvn test`.
 - High code coverage is maintained to ensure reliability.
 
 ## Documentation
@@ -158,113 +153,123 @@ All business logic errors are reported as user-friendly messages and logged. The
 classDiagram
     %% Main Classes and Interfaces
     class App {
-        +main(String[] args) void
+      +main(String[] args) void
     }
+
     class SnippetManager {
-        -FILE_NAME: String
-        -DATA_DIR: String
-        -file: File
-        -objectMapper: ObjectMapper
-        -snippetComponent: SnippetComponent
-        +SnippetManager()
-        +addSnippet(String, String, String) void
-        +addSnippet(String, String, String, Set~String~, String) void
-        +searchSnippets(String) void
-        +searchByTag(String) void
-        +getAllTags() Set~String~
-        +editSnippet(int, String, String, String) void
-        +deleteSnippet(int) void
-        +getAllSnippets() List~Snippet~
-        +getSnippetComponent() SnippetComponent
-        +getSnippetCount() int
+      -FILE_NAME: String
+      -DATA_DIR: String
+      -file: File
+      -objectMapper: ObjectMapper
+      -snippetComponent: SnippetComponent
+      +SnippetManager()
+      +addSnippet(String, String, String) void
+      +addSnippet(String, String, String, Set~String~, String) void
+      +searchSnippets(String) void
+      +searchByTag(String) void
+      +getAllTags() Set~String~
+      +editSnippet(int, String, String, String) void
+      +deleteSnippet(int) void
+      +getAllSnippets() List~Snippet~
+      +getSnippetComponent() SnippetComponent
+      +getSnippetCount() int
     }
+    
     class SnippetComponent {
-        <<interface>>
-        +getName() String
-        +getAllSnippets() List~Snippet~
-        +addSnippet(Snippet) void
-        +removeSnippet(Snippet) void
-        +getSnippetCount() int
-        +isEmpty() boolean
-        +display() void
+      <<interface>>
+      +getName() String
+      +getAllSnippets() List~Snippet~
+      +addSnippet(Snippet) void
+      +removeSnippet(Snippet) void
+      +getSnippetCount() int
+      +isEmpty() boolean
+      +display() void
     }
+
     class Snippet {
-        -id: int
-        -title: String
-        -language: String
-        -code: String
-        -tags: Set~String~
-        -description: String
-        +Snippet(int, String, String, String)
-        +Snippet(int, String, String, String, Set~String~, String)
-        +getId() int
-        +setId(int) void
-        +getTitle() String
-        +setTitle(String) void
-        +getLanguage() String
-        +setLanguage(String) void
-        +getCode() String
-        +setCode(String) void
-        +getTags() Set~String~
-        +setTags(Set~String~) void
-        +addTag(String) void
-        +removeTag(String) void
-        +hasTag(String) boolean
-        +getDescription() String
-        +setDescription(String) void
-        +toString() String
+      -id: int
+      -title: String
+      -language: String
+      -code: String
+      -tags: Set~String~
+      -description: String
+      +Snippet(int, String, String, String)
+      +Snippet(int, String, String, String, Set~String~, String)
+      +getId() int
+      +setId(int) void
+      +getTitle() String
+      +setTitle(String) void
+      +getLanguage() String
+      +setLanguage(String) void
+      +getCode() String
+      +setCode(String) void
+      +getTags() Set~String~
+      +setTags(Set~String~) void
+      +addTag(String) void
+      +removeTag(String) void
+      +hasTag(String) boolean
+      +getDescription() String
+      +setDescription(String) void
+      +toString() String
     }
+
     class SnippetCollection {
-        -snippets: List~Snippet~
-        -name: String
-        +SnippetCollection(String)
-        +addSnippet(Snippet) void
-        +removeSnippet(Snippet) void
-        +getAllSnippets() List~Snippet~
-        +getName() String
-        +setName(String) void
-        +getSnippetCount() int
-        +isEmpty() boolean
-        +display() void
+      -snippets: List~Snippet~
+      -name: String
+      +SnippetCollection(String)
+      +addSnippet(Snippet) void
+      +removeSnippet(Snippet) void
+      +getAllSnippets() List~Snippet~
+      +getName() String
+      +setName(String) void
+      +getSnippetCount() int
+      +isEmpty() boolean
+      +display() void
     }
+
     class SnippetFactory {
-        +createSnippet(int, String, String, String) Snippet
+      +createSnippet(int, String, String, String) Snippet
     }
+
     class SnippetIterator {
-        -snippets: List~Snippet~
-        -position: int
-        +SnippetIterator(List~Snippet~)
-        +hasNext() boolean
-        +next() Snippet
+      -snippets: List~Snippet~
+      -position: int
+      +SnippetIterator(List~Snippet~)
+      +hasNext() boolean
+      +next() Snippet
     }
+
     class SnippetAnalyzer {
-        +analyzeComponent(SnippetComponent) Map
-        +displayAnalysis(SnippetComponent) void
-        +displayEnhancedAnalysis(SnippetComponent) void
-        +getLanguageDistribution(SnippetComponent) Map
-        +getTagDistribution(SnippetComponent) Map
-        +getAverageCodeLength(SnippetComponent) double
-        +getLongestSnippet(SnippetComponent) Snippet
-        +getShortestSnippet(SnippetComponent) Snippet
-        +findSnippetsByLanguage(SnippetComponent, String) List~Snippet~
-        +getSnippetsWithCodeLongerThan(SnippetComponent, int) List~Snippet~
-        +getSnippetsWithDescriptions(SnippetComponent) List~Snippet~
-        +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
+      +analyzeComponent(SnippetComponent) Map
+      +displayAnalysis(SnippetComponent) void
+      +displayEnhancedAnalysis(SnippetComponent) void
+      +getLanguageDistribution(SnippetComponent) Map
+      +getTagDistribution(SnippetComponent) Map
+      +getAverageCodeLength(SnippetComponent) double
+      +getLongestSnippet(SnippetComponent) Snippet
+      +getShortestSnippet(SnippetComponent) Snippet
+      +findSnippetsByLanguage(SnippetComponent, String) List~Snippet~
+      +getSnippetsWithCodeLongerThan(SnippetComponent, int) List~Snippet~
+      +getSnippetsWithDescriptions(SnippetComponent) List~Snippet~
+      +getSnippetsWithoutDescriptions(SnippetComponent) List~Snippet~
     }
+
     class SnippetExporter {
-        +exportToText(List~Snippet~, String) void
-        +exportComponentToText(SnippetComponent, String) void
-        +exportByLanguage(SnippetComponent, String) void
-        +exportSummaryReport(SnippetComponent, String) void
+      +exportToText(List~Snippet~, String) void
+      +exportComponentToText(SnippetComponent, String) void
+      +exportByLanguage(SnippetComponent, String) void
+      +exportSummaryReport(SnippetComponent, String) void
     }
+
     class SnippetLogger {
-        +log(String) void
-        +logInfo(String) void
-        +logError(String, Throwable) void
+      +log(String) void
+      +logInfo(String) void
+      +logError(String, Throwable) void
     }
+    
     class SnippetException {
-        +SnippetException(String)
-        +SnippetException(String, Throwable)
+      +SnippetException(String)
+      +SnippetException(String, Throwable)
     }
 
     %% Interface Implementation
@@ -279,18 +284,18 @@ classDiagram
     App --> SnippetAnalyzer : uses
     App --> SnippetExporter : uses
 
-    SnippetManager --> SnippetComponent : manages
-    SnippetManager --> SnippetFactory : creates
-    SnippetManager --> SnippetIterator : iterates
-    SnippetManager --> SnippetLogger : logs
-    SnippetManager --> SnippetException : throws
-
     SnippetFactory --> Snippet : creates
 
     SnippetIterator --> Snippet : iterates over
 
     SnippetAnalyzer --> SnippetComponent : analyzes
     SnippetAnalyzer --> Snippet : analyzes
+
+    SnippetManager --> SnippetComponent : manages
+    SnippetManager --> SnippetFactory : creates
+    SnippetManager --> SnippetIterator : iterates
+    SnippetManager --> SnippetLogger : logs
+    SnippetManager --> SnippetException : throws
 
     SnippetExporter --> SnippetComponent : exports
     SnippetExporter --> Snippet : exports

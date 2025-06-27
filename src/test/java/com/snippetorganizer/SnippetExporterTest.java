@@ -13,6 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/*
+ * Test suite for the SnippetExporter class.
+ * Tests core functionality including exporting snippets to text files,
+ */
 class SnippetExporterTest {
 
     private Path tempFile;
