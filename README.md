@@ -2,7 +2,7 @@
 
 ## Project Objective
 
-Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database. Data is saved to files in a dedicated `data/` directory.
+Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database.
 
 ## Data Directory
 
@@ -136,22 +136,9 @@ Snippet edited successfully!
 
 ---
 
-**Tip:** All actions are logged to `data/snippet_organizer.log`. Data is always saved in `data/snippets.json`.
+All actions are logged to `data/snippet_organizer.log`. Data is always saved in `data/snippets.json`.
 
 ---
-
-### Summary Table
-
-| Option | Action                | Description                                      |
-|--------|-----------------------|--------------------------------------------------|
-| 0      | Close application     | Exit the program                                 |
-| 1      | Add new snippet       | Add a code snippet with metadata                 |
-| 2      | Search snippets       | Search by keyword or tag                         |
-| 3      | Edit snippet          | Edit any field of an existing snippet            |
-| 4      | Delete snippet        | Remove a snippet by ID                           |
-| 5      | Export snippets       | Export all snippets to a text file               |
-| 6      | Analyze snippets      | View statistics and export analysis              |
-| 7      | Manage tags           | Add/remove/view tags for snippets                |
 
 ## Advanced Features
 
