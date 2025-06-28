@@ -4,6 +4,8 @@ import java.util.List;
 
 /**
  * SnippetComponent interface for the Composite Pattern implementation.
+ * Supports both individual snippets and collections of snippets.
+ * 
  * @author Sherif Moustafa
  * @version 1.0
  * @see Snippet
@@ -34,12 +36,34 @@ public interface SnippetComponent {
     void addSnippet(Snippet snippet);
     
     /**
+     * Adds a snippet component to this component.
+     * This method supports the Composite pattern by allowing collections to be added.
+     * 
+     * @param component the snippet component to add
+     * @throws UnsupportedOperationException if the component doesn't support adding other components
+     */
+    default void addSnippet(SnippetComponent component) {
+        throw new UnsupportedOperationException("This component does not support adding other components");
+    }
+    
+    /**
      * Removes a snippet from this component.
      * 
      * @param snippet the snippet to remove
      * @throws UnsupportedOperationException if the component doesn't support removing snippets
      */
     void removeSnippet(Snippet snippet);
+    
+    /**
+     * Removes a snippet component from this component.
+     * This method supports the Composite pattern by allowing collections to be removed.
+     * 
+     * @param component the snippet component to remove
+     * @throws UnsupportedOperationException if the component doesn't support removing other components
+     */
+    default void removeSnippet(SnippetComponent component) {
+        throw new UnsupportedOperationException("This component does not support removing other components");
+    }
     
     /**
      * Gets the total number of snippets in this component.

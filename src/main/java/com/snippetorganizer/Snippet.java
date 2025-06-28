@@ -41,7 +41,7 @@ public final class Snippet implements SnippetComponent {
         setLanguage(language);
         setCode(code);
         this.tags = new HashSet<>();
-        this.description = "";
+        this.description = null;
     }
 
     /**
@@ -86,11 +86,11 @@ public final class Snippet implements SnippetComponent {
      * Sets the code content of the snippet.
      * 
      * @param code the code content to set (must not be null or empty)
-     * @throws IllegalArgumentException if the code is null or empty
+     * @throws SnippetException if the code is null or empty
      */
     public void setCode(String code) {
         if (code == null || code.trim().isEmpty()) {
-            throw new IllegalArgumentException("Code cannot be null or empty");
+            throw SnippetException.validationError("Code cannot be null or empty");
         }
         this.code = code;
     }
@@ -108,11 +108,11 @@ public final class Snippet implements SnippetComponent {
      * Sets the unique identifier of the snippet.
      * 
      * @param id the ID to set (must be non-negative)
-     * @throws IllegalArgumentException if the ID is negative
+     * @throws SnippetException if the ID is negative
      */
     public void setId(int id) {
         if (id < 0) {
-            throw new IllegalArgumentException("ID cannot be negative");
+            throw SnippetException.validationError("ID cannot be negative");
         }
         this.id = id;
     }
@@ -130,11 +130,11 @@ public final class Snippet implements SnippetComponent {
      * Sets the title of the snippet.
      * 
      * @param title the title to set (must not be null or empty)
-     * @throws IllegalArgumentException if the title is null or empty
+     * @throws SnippetException if the title is null or empty
      */
     public void setTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
+            throw SnippetException.validationError("Title cannot be null or empty");
         }
         this.title = title;
     }
@@ -152,11 +152,11 @@ public final class Snippet implements SnippetComponent {
      * Sets the programming language of the snippet.
      * 
      * @param language the programming language to set (must not be null or empty)
-     * @throws IllegalArgumentException if the language is null or empty
+     * @throws SnippetException if the language is null or empty
      */
     public void setLanguage(String language) {
         if (language == null || language.trim().isEmpty()) {
-            throw new IllegalArgumentException("Language cannot be null or empty");
+            throw SnippetException.validationError("Language cannot be null or empty");
         }
         this.language = language;
     }
@@ -221,10 +221,10 @@ public final class Snippet implements SnippetComponent {
     /**
      * Sets the description of this snippet.
      * 
-     * @param description the description to set (null is converted to empty string)
+     * @param description the description to set (can be null)
      */
     public void setDescription(String description) {
-        this.description = description != null ? description : "";
+        this.description = description;
     }
 
     /**
@@ -258,7 +258,7 @@ public final class Snippet implements SnippetComponent {
     @JsonIgnore
     @Override
     public void addSnippet(Snippet snippet) {
-        throw new UnsupportedOperationException("Cannot add snippet to individual snippet");
+        throw new UnsupportedOperationException("Individual snippets cannot contain other snippets");
     }
 
     /**
@@ -270,7 +270,7 @@ public final class Snippet implements SnippetComponent {
     @JsonIgnore
     @Override
     public void removeSnippet(Snippet snippet) {
-        throw new UnsupportedOperationException("Cannot remove snippet from individual snippet");
+        throw new UnsupportedOperationException("Individual snippets cannot contain other snippets");
     }
 
     /**
@@ -315,7 +315,7 @@ public final class Snippet implements SnippetComponent {
             Title: %s
             Language: %s""", id, title, language));
         
-        if (!description.isEmpty()) {
+        if (description != null && !description.isEmpty()) {
             sb.append(String.format("\nDescription: %s", description));
         }
         

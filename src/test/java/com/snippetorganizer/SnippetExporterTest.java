@@ -80,15 +80,15 @@ class SnippetExporterTest {
 
     @Test
     void testExportToText_NullSnippets() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportToText(null, tempFile.toString())
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportToText(null, tempFile.toString());
+        });
     }
 
     @Test
     void testExportToText_NullFilename() {
         List<Snippet> snippets = List.of(new Snippet(1, "Test", "Java", "code"));
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(SnippetException.class, () ->
             SnippetExporter.exportToText(snippets, null)
         );
     }
@@ -96,7 +96,7 @@ class SnippetExporterTest {
     @Test
     void testExportToText_EmptyFilename() {
         List<Snippet> snippets = List.of(new Snippet(1, "Test", "Java", "code"));
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(SnippetException.class, () ->
             SnippetExporter.exportToText(snippets, "")
         );
     }
@@ -140,25 +140,25 @@ class SnippetExporterTest {
 
     @Test
     void testExportComponentToText_NullComponent() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportComponentToText(null, tempFile.toString())
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportComponentToText(null, tempFile.toString());
+        });
     }
 
     @Test
     void testExportComponentToText_NullFilename() {
         SnippetComponent component = new SnippetCollection("Test");
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportComponentToText(component, null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportComponentToText(component, null);
+        });
     }
 
     @Test
     void testExportComponentToText_EmptyFilename() {
         SnippetComponent component = new SnippetCollection("Test");
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportComponentToText(component, "")
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportComponentToText(component, "");
+        });
     }
 
     @Test
@@ -222,25 +222,25 @@ class SnippetExporterTest {
 
     @Test
     void testExportByLanguage_NullComponent() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportByLanguage(null, "test")
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportByLanguage(null, "test");
+        });
     }
 
     @Test
     void testExportByLanguage_NullBaseFilename() {
         SnippetComponent component = new SnippetCollection("Test");
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportByLanguage(component, null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportByLanguage(component, null);
+        });
     }
 
     @Test
     void testExportByLanguage_EmptyBaseFilename() {
         SnippetComponent component = new SnippetCollection("Test");
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportByLanguage(component, "")
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportByLanguage(component, "");
+        });
     }
 
     @Test
@@ -278,31 +278,29 @@ class SnippetExporterTest {
         assertTrue(content.contains("=== SNIPPET SUMMARY REPORT ==="));
         assertTrue(content.contains("Component: Empty Collection"));
         assertTrue(content.contains("Total Snippets: 0"));
-        assertTrue(content.contains("Language Distribution:"));
-        assertTrue(content.contains("Longest Snippet: N/A"));
-        assertTrue(content.contains("Shortest Snippet: N/A"));
+        assertTrue(content.contains("Average Code Length: 0.0 characters"));
     }
 
     @Test
     void testExportSummaryReport_NullComponent() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportSummaryReport(null, tempFile.toString())
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportSummaryReport(null, tempFile.toString());
+        });
     }
 
     @Test
     void testExportSummaryReport_NullFilename() {
         SnippetComponent component = new SnippetCollection("Test");
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportSummaryReport(component, null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportSummaryReport(component, null);
+        });
     }
 
     @Test
     void testExportSummaryReport_EmptyFilename() {
         SnippetComponent component = new SnippetCollection("Test");
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetExporter.exportSummaryReport(component, "")
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetExporter.exportSummaryReport(component, "");
+        });
     }
 }

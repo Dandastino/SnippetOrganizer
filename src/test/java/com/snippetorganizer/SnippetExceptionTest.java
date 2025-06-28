@@ -68,7 +68,7 @@ class SnippetExceptionTest {
 
     @Test
     void testConstructor_NullMessageAndCause() {
-        SnippetException exception = new SnippetException(null, null);
+        SnippetException exception = new SnippetException(SnippetException.ErrorType.OPERATION_FAILED, null, null);
         
         assertNull(exception.getMessage());
         assertNull(exception.getCause());

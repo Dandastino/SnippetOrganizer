@@ -162,14 +162,85 @@ Snippet edited successfully!
 
 ## Design Patterns Used
 
-- **Composite Pattern:** `SnippetComponent` interface, with `Snippet` (leaf) and `SnippetCollection` (composite).
-- **Factory Pattern:** `SnippetFactory` for creating new snippets.
-- **Iterator Pattern:** `SnippetIterator` for traversing snippet collections.
-- **Exception Shielding Pattern:** All low-level errors are wrapped in a custom `SnippetException`, ensuring only user-friendly, meaningful errors are exposed to the user and logged. This shields the application from internal exceptions and improves robustness and security.
+- **Composite Pattern:** `SnippetComponent` interface, with `Snippet` (leaf) and `SnippetCollection` (composite) supporting nested collections and uniform treatment.
+- **Factory Pattern:** Enhanced `SnippetFactory` with multiple factory methods for creating snippets with different parameter combinations.
+- **Iterator Pattern:** `SnippetIterator` for traversing snippet collections with proper local instantiation.
+- **Exception Shielding Pattern:** Enhanced `SnippetException` system with categorized error types, providing consistent error handling across the application.
 
-## Error Handling
+## Design Pattern Implementations
 
-All business logic errors are reported as user-friendly messages and logged. The application uses a custom `SnippetException` for robust error management.
+### Factory Pattern Enhancement
+
+The `SnippetFactory` provides multiple factory methods for creating snippets with different parameter combinations:
+
+#### Factory Methods
+- `createSnippet(int, String, String, String)` - Basic snippet creation
+- `createSnippet(int, String, String, String, Set<String>, String)` - Complete snippet with tags and description
+- `createSnippetWithTags(int, String, String, String, Set<String>)` - Snippet with tags only
+- `createSnippetWithDescription(int, String, String, String, String)` - Snippet with description only
+
+#### Benefits
+- **Centralized Creation Logic:** All snippet creation goes through the factory
+- **Parameter Validation:** Factory validates all parameters before creating objects
+- **Flexible Creation:** Multiple methods for different use cases
+- **Consistent Error Handling:** Factory throws appropriate validation errors
+
+### Composite Pattern Enhancement
+
+The Composite pattern allows treating individual snippets and collections uniformly:
+
+#### Key Features
+- **Nested Collections:** Collections can contain other collections
+- **Uniform Interface:** Both `Snippet` and `SnippetCollection` implement `SnippetComponent`
+- **Recursive Operations:** Operations traverse the entire composite structure
+- **Hierarchical Organization:** Supports complex organizational structures
+
+#### Implementation Details
+- `SnippetComponent` interface defines common operations
+- `Snippet` (leaf) implements basic component behavior
+- `SnippetCollection` (composite) can contain both snippets and other collections
+- Recursive methods for counting, displaying, and analyzing components
+
+
+### Iterator Pattern Enhancement
+
+The Iterator pattern provides consistent traversal of snippet collections:
+
+#### Implementation
+- `SnippetIterator` class for traversing snippet lists
+- Local instantiation in methods to avoid initialization issues
+- Consistent interface for all iteration operations
+- Proper error handling during iteration
+
+#### Benefits
+- **Encapsulation:** Hides internal collection structure
+- **Consistency:** Same iteration interface across the application
+- **Flexibility:** Easy to change iteration implementation
+- **Memory Efficiency:** Local instantiation prevents memory leaks
+
+### Exception Shielding Pattern Enhancement
+
+The Exception Shielding pattern provides robust error handling throughout the application:
+
+#### Error Type Categorization
+- **VALIDATION_ERROR:** Invalid input parameters
+- **IO_ERROR:** File system operations
+- **NOT_FOUND:** Resource not found
+- **DUPLICATE_ERROR:** Duplicate resources
+- **OPERATION_FAILED:** General operation failures
+- **SYSTEM_ERROR:** Unexpected system errors
+
+#### Key Features
+- **Categorized Errors:** Each exception has a specific error type
+- **Formatted Messages:** Error messages include error type for clarity
+- **Root Cause Preservation:** Original exceptions are preserved as causes
+- **Static Factory Methods:** Convenient methods for creating specific error types
+
+#### Integration with Other Patterns
+- **Factory Pattern:** Factory methods throw appropriate validation errors
+- **Composite Pattern:** Collection operations throw relevant error types
+- **Iterator Pattern:** Iteration errors are properly categorized
+- **Manager Pattern:** Business logic errors are consistently handled
 
 ## Testing
 
@@ -198,7 +269,9 @@ classDiagram
       +getName() String
       +getAllSnippets() List~Snippet~
       +addSnippet(Snippet) void
+      +addSnippet(SnippetComponent) void
       +removeSnippet(Snippet) void
+      +removeSnippet(SnippetComponent) void
       +getSnippetCount() int
       +isEmpty() boolean
       +display() void
@@ -253,6 +326,7 @@ classDiagram
       -objectMapper: ObjectMapper
       -snippetComponent: SnippetComponent
       +SnippetManager()
+      +SnippetManager(String)
       +addSnippet(String, String, String) void
       +addSnippet(String, String, String, Set~String~, String) void
       +searchSnippets(String) void
@@ -263,15 +337,20 @@ classDiagram
       +getAllSnippets() List~Snippet~
       +getSnippetComponent() SnippetComponent
       +getSnippetCount() int
+      +listSnippets() void
+      +createCompositeDemo() SnippetComponent
     }
 
     class SnippetCollection {
-      -snippets: List~Snippet~
+      -components: List~SnippetComponent~
       -name: String
       +SnippetCollection(String)
       +addSnippet(Snippet) void
+      +addSnippet(SnippetComponent) void
       +removeSnippet(Snippet) void
+      +removeSnippet(SnippetComponent) void
       +getAllSnippets() List~Snippet~
+      +getComponents() List~SnippetComponent~
       +getName() String
       +setName(String) void
       +getSnippetCount() int
@@ -281,6 +360,10 @@ classDiagram
 
     class SnippetFactory {
       +createSnippet(int, String, String, String) Snippet
+      +createSnippet(int, String, String, String, Set~String~, String) Snippet
+      +createSnippetWithTags(int, String, String, String, Set~String~) Snippet
+      +createSnippetWithDescription(int, String, String, String, String) Snippet
+      -validateBasicParameters(int, String, String, String) void
     }
 
     class SnippetIterator {
@@ -305,8 +388,29 @@ classDiagram
     }
 
     class SnippetException {
+      -errorType: ErrorType
       +SnippetException(String)
       +SnippetException(String, Throwable)
+      +SnippetException(ErrorType, String)
+      +SnippetException(ErrorType, String, Throwable)
+      +getErrorType() ErrorType
+      +getFormattedMessage() String
+      +validationError(String) SnippetException
+      +ioError(String, Throwable) SnippetException
+      +notFound(String) SnippetException
+      +duplicateError(String) SnippetException
+      +systemError(String, Throwable) SnippetException
+    }
+
+    class ErrorType {
+      <<enum>>
+      VALIDATION_ERROR
+      IO_ERROR
+      NOT_FOUND
+      DUPLICATE_ERROR
+      OPERATION_FAILED
+      SYSTEM_ERROR
+      +getDisplayName() String
     }
 
     %% Interface Implementation
@@ -314,7 +418,7 @@ classDiagram
     SnippetComponent <|.. SnippetCollection
 
     %% Aggregation/Composition
-    SnippetCollection o-- Snippet : contains
+    SnippetCollection o-- SnippetComponent : contains
 
     %% Usage/Dependency/Association
     App --> SnippetManager : uses
@@ -346,7 +450,12 @@ classDiagram
     SnippetException <|-- SnippetManager : thrown by
     SnippetException <|-- SnippetExporter : thrown by
     SnippetException <|-- SnippetAnalyzer : thrown by
+    SnippetException <|-- SnippetFactory : thrown by
+    SnippetException <|-- Snippet : thrown by
+    SnippetException <|-- SnippetCollection : thrown by
     SnippetException <|-- App : thrown by
+
+    SnippetException --> ErrorType : uses
 ```
 
 ## Documentation and Justification
@@ -372,26 +481,34 @@ The Snippet Organizer is designed to be a lightweight, offline-first code snippe
 
 ### Technical Patterns
 
-1. **Factory Pattern**
-   - `SnippetFactory` for creating snippets
-   - Encapsulates object creation
-   - Makes it easy to modify creation logic
+1. **Enhanced Factory Pattern**
+   - `SnippetFactory` with multiple factory methods for different creation scenarios
+   - Centralized parameter validation before object creation
+   - Consistent error handling with appropriate exception types
+   - Flexible creation options (basic, with tags, with description, complete)
+   - Encapsulates object creation logic and makes it easy to modify
 
-2. **Composite Pattern**
-   - `SnippetComponent` interface for uniform treatment
+2. **Enhanced Composite Pattern**
+   - `SnippetComponent` interface for uniform treatment of components
    - `Snippet` as leaf nodes and `SnippetCollection` as composite nodes
-   - Allows treating individual snippets and collections uniformly
-   - Enables hierarchical organization of code snippets
+   - Support for nested collections (collections containing other collections)
+   - Recursive operations that traverse the entire composite structure
+   - Hierarchical organization of code snippets
+   - Uniform interface for both individual snippets and collections
 
-3. **Iterator Pattern**
-   - `SnippetIterator` for traversing snippets
-   - Hides implementation details
-   - Consistent access to collections
+3. **Enhanced Iterator Pattern**
+   - `SnippetIterator` for traversing snippet collections
+   - Local instantiation in methods to avoid initialization issues
+   - Consistent interface for all iteration operations across the application
+   - Proper error handling during iteration
+   - Encapsulation of collection traversal logic
 
-4. **Exception Shielding Pattern**
-   - Custom `SnippetException` class
-   - Meaningful error messages
-   - Proper error handling
+4. **Enhanced Exception Shielding Pattern**
+   - Custom `SnippetException` class with categorized error types
+   - Meaningful error messages with error type categorization
+   - Root cause preservation for debugging
+   - Static factory methods for creating specific error types
+   - Integration with all other design patterns for consistent error handling
 
 ### Core Technologies
 

@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @see SnippetCollection
  */
 public class SnippetManager {
+
+
     
     /** The filename for storing snippets in JSON format */
     private static final String FILE_NAME = "snippets.json";
@@ -72,7 +74,8 @@ public class SnippetManager {
 
             System.out.println("Files checked on startup.");
         } catch (IOException e) {
-            System.err.println("Warning: Error initializing files: " + e.getMessage());
+            SnippetLogger.logError("Error initializing files", e);
+            throw SnippetException.ioError("Failed to initialize application files", e);
         }
 
         loadSnippets();
@@ -98,7 +101,8 @@ public class SnippetManager {
                 }
                 System.out.println("Successfully loaded " + snippets.length + " snippets from file.");
             } catch (IOException e) {
-                System.err.println("Warning: Error reading snippets file: " + e.getMessage());
+                SnippetLogger.logError("Error reading snippets file", e);
+                throw SnippetException.ioError("Failed to load snippets from file", e);
             }
         }
     }
@@ -130,13 +134,16 @@ public class SnippetManager {
      */
     public void addSnippet(String title, String language, String code, Set<String> tags, String description) {
         try {
-            Snippet newSnippet = new Snippet(getNextId(), title, language, code, tags, description);
+            Snippet newSnippet = SnippetFactory.createSnippet(getNextId(), title, language, code, tags, description);
             snippetComponent.addSnippet(newSnippet);
             saveSnippets();
             SnippetLogger.logInfo("Added new snippet: " + title);
-        } catch (Exception e) {
+        } catch (SnippetException e) {
             SnippetLogger.logError("Error adding snippet", e);
-            throw new SnippetException("Error adding snippet", e);
+            throw e; // Re-throw SnippetException as-is
+        } catch (Exception e) {
+            SnippetLogger.logError("Unexpected error adding snippet", e);
+            throw SnippetException.systemError("Unexpected error occurred while adding snippet", e);
         }
     }
 
@@ -160,12 +167,12 @@ public class SnippetManager {
      */
     public void searchSnippets(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            throw new SnippetException("Please provide a valid value for searching.");
+            throw SnippetException.validationError("Please provide a valid value for searching.");
         }
 
-        SnippetIterator iterator = new SnippetIterator(snippetComponent.getAllSnippets());
         boolean found = false;
         String lowerKeyword = keyword.toLowerCase();
+        SnippetIterator iterator = new SnippetIterator(snippetComponent.getAllSnippets());
 
         while (iterator.hasNext()) {
             Snippet snippet = iterator.next();
@@ -204,7 +211,7 @@ public class SnippetManager {
      */
     public void searchByTag(String tag) {
         if (tag == null || tag.trim().isEmpty()) {
-            throw new SnippetException("Please provide a valid tag for searching.");
+            throw SnippetException.validationError("Please provide a valid tag for searching.");
         }
 
         SnippetIterator iterator = new SnippetIterator(snippetComponent.getAllSnippets());
@@ -272,10 +279,15 @@ public class SnippetManager {
         }
 
         if (found) {
-            saveSnippets();
-            SnippetLogger.logInfo("Edited snippet with ID: " + snippetId);
+            try {
+                saveSnippets();
+                SnippetLogger.logInfo("Edited snippet with ID: " + snippetId);
+            } catch (SnippetException e) {
+                SnippetLogger.logError("Error saving after edit", e);
+                throw e;
+            }
         } else {
-            throw new SnippetException("No snippet found with ID: " + snippetId);
+            throw SnippetException.notFound("No snippet found with ID: " + snippetId);
         }
     }
 
@@ -299,10 +311,15 @@ public class SnippetManager {
         }
 
         if (found) {
-            saveSnippets();
-            SnippetLogger.logInfo("Deleted snippet with ID: " + snippetId);
+            try {
+                saveSnippets();
+                SnippetLogger.logInfo("Deleted snippet with ID: " + snippetId);
+            } catch (SnippetException e) {
+                SnippetLogger.logError("Error saving after deletion", e);
+                throw e;
+            }
         } else {
-            throw new SnippetException("No snippet found with ID: " + snippetId);
+            throw SnippetException.notFound("No snippet found with ID: " + snippetId);
         }
     }
 
@@ -334,6 +351,64 @@ public class SnippetManager {
     }
 
     /**
+     * Demonstrates the Composite pattern by creating a nested collection structure.
+     * This method shows how the Composite pattern allows treating individual snippets
+     * and collections of snippets uniformly.
+     * 
+     * @return a composite structure containing multiple snippet collections
+     */
+    public SnippetComponent createCompositeDemo() {
+        // Create the main collection
+        SnippetCollection mainCollection = new SnippetCollection("Main Collection");
+        
+        // Create sub-collections using the Composite pattern
+        SnippetCollection javaCollection = new SnippetCollection("Java Snippets");
+        SnippetCollection pythonCollection = new SnippetCollection("Python Snippets");
+        SnippetCollection webCollection = new SnippetCollection("Web Development");
+        
+        // Use the Factory pattern to create snippets for each collection
+        try {
+            // Add snippets to Java collection
+            javaCollection.addSnippet(SnippetFactory.createSnippetWithTags(1, "Java Class", "Java", 
+                "public class Example {\n    private String name;\n    public Example(String name) {\n        this.name = name;\n    }\n}", 
+                Set.of("class", "constructor", "java")));
+            
+            javaCollection.addSnippet(SnippetFactory.createSnippetWithDescription(2, "Java Method", "Java", 
+                "public void processData(String data) {\n    if (data != null) {\n        System.out.println(data);\n    }\n}", 
+                "A method that processes string data safely"));
+            
+            // Add snippets to Python collection
+            pythonCollection.addSnippet(SnippetFactory.createSnippet(3, "Python Function", "Python", 
+                "def calculate_sum(a, b):\n    return a + b"));
+            
+            pythonCollection.addSnippet(SnippetFactory.createSnippetWithTags(4, "Python List Comprehension", "Python", 
+                "squares = [x**2 for x in range(10)]", 
+                Set.of("list", "comprehension", "python")));
+            
+            // Add snippets to Web collection
+            webCollection.addSnippet(SnippetFactory.createSnippetWithTags(5, "HTML Structure", "HTML", 
+                "<!DOCTYPE html>\n<html>\n<head>\n    <title>Page</title>\n</head>\n<body>\n    <h1>Hello World</h1>\n</body>\n</html>", 
+                Set.of("html", "structure", "web")));
+            
+            webCollection.addSnippet(SnippetFactory.createSnippetWithDescription(6, "CSS Styling", "CSS", 
+                ".container {\n    max-width: 1200px;\n    margin: 0 auto;\n    padding: 20px;\n}", 
+                "Responsive container styling"));
+            
+            // Add sub-collections to main collection (Composite pattern)
+            mainCollection.addSnippet(javaCollection);
+            mainCollection.addSnippet(pythonCollection);
+            mainCollection.addSnippet(webCollection);
+            
+            SnippetLogger.logInfo("Created composite demo structure with " + mainCollection.getSnippetCount() + " total snippets");
+            
+        } catch (Exception e) {
+            SnippetLogger.logError("Error creating composite demo", e);
+        }
+        
+        return mainCollection;
+    }
+
+    /**
      * Saves the current state of the snippet collection to the JSON file.
      *
      * @throws SnippetException if an error occurs during file writing
@@ -344,7 +419,7 @@ public class SnippetManager {
             objectMapper.writeValue(file, allSnippets);
         } catch (IOException e) {
             SnippetLogger.logError("Error saving snippets", e);
-            throw new SnippetException("Error saving snippets", e);
+            throw SnippetException.ioError("Failed to save snippets to file", e);
         }
     }
 }

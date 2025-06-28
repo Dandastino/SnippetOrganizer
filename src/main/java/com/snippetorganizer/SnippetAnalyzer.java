@@ -18,33 +18,30 @@ public class SnippetAnalyzer {
      * Analyzes a snippet component and returns comprehensive statistics.
      * 
      * @param component the snippet component to analyze (must not be null)
-     * @return a map containing analysis results
-     * @throws IllegalArgumentException if component is null
+     * @return a map containing various analysis metrics
+     * @throws SnippetException if component is null
      */
     public static Map<String, Object> analyzeComponent(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         Map<String, Object> analysis = new HashMap<>();
-        
-        analysis.put("name", component.getName());
+        analysis.put("componentName", component.getName());
         analysis.put("totalSnippets", component.getSnippetCount());
         analysis.put("isEmpty", component.isEmpty());
         
-        // Language distribution
-        Map<String, Integer> languageStats = getLanguageDistribution(component);
-        analysis.put("languageDistribution", languageStats);
-        
-        // Average code length
-        double avgCodeLength = getAverageCodeLength(component);
-        analysis.put("averageCodeLength", avgCodeLength);
-        
-        // Longest and shortest snippets
-        Snippet longestSnippet = getLongestSnippet(component);
-        Snippet shortestSnippet = getShortestSnippet(component);
-        analysis.put("longestSnippet", longestSnippet != null ? longestSnippet.getTitle() : "N/A");
-        analysis.put("shortestSnippet", shortestSnippet != null ? shortestSnippet.getTitle() : "N/A");
+        if (!component.isEmpty()) {
+            analysis.put("averageCodeLength", getAverageCodeLength(component));
+            analysis.put("languageDistribution", getLanguageDistribution(component));
+            analysis.put("longestSnippet", getLongestSnippet(component) != null ? getLongestSnippet(component).getTitle() : "None");
+            analysis.put("shortestSnippet", getShortestSnippet(component) != null ? getShortestSnippet(component).getTitle() : "None");
+        } else {
+            analysis.put("averageCodeLength", 0.0);
+            analysis.put("languageDistribution", new HashMap<String, Integer>());
+            analysis.put("longestSnippet", "None");
+            analysis.put("shortestSnippet", "None");
+        }
         
         return analysis;
     }
@@ -54,11 +51,11 @@ public class SnippetAnalyzer {
      * 
      * @param component the snippet component to analyze (must not be null)
      * @return a map of language names to snippet counts
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static Map<String, Integer> getLanguageDistribution(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         Map<String, Integer> distribution = new HashMap<>();
@@ -75,24 +72,27 @@ public class SnippetAnalyzer {
      * Calculates the average code length in the component.
      * 
      * @param component the snippet component to analyze (must not be null)
-     * @return the average code length in characters, or 0.0 if empty
-     * @throws IllegalArgumentException if component is null
+     * @return the average code length in characters
+     * @throws SnippetException if component is null
      */
     public static double getAverageCodeLength(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
-        List<Snippet> snippets = component.getAllSnippets();
-        if (snippets.isEmpty()) {
+        if (component.isEmpty()) {
             return 0.0;
         }
         
-        int totalLength = snippets.stream()
-                .mapToInt(snippet -> snippet.getCode().length())
-                .sum();
+        int totalLength = 0;
+        int snippetCount = 0;
         
-        return (double) totalLength / snippets.size();
+        for (Snippet snippet : component.getAllSnippets()) {
+            totalLength += snippet.getCode().length();
+            snippetCount++;
+        }
+        
+        return snippetCount > 0 ? (double) totalLength / snippetCount : 0.0;
     }
     
     /**
@@ -100,11 +100,11 @@ public class SnippetAnalyzer {
      * 
      * @param component the snippet component to analyze (must not be null)
      * @return the snippet with the longest code, or null if the component is empty
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static Snippet getLongestSnippet(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         return component.getAllSnippets().stream()
@@ -117,11 +117,11 @@ public class SnippetAnalyzer {
      * 
      * @param component the snippet component to analyze (must not be null)
      * @return the snippet with the shortest code, or null if the component is empty
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static Snippet getShortestSnippet(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         return component.getAllSnippets().stream()
@@ -133,11 +133,11 @@ public class SnippetAnalyzer {
      * Displays a comprehensive analysis of the component.
      * 
      * @param component the snippet component to analyze (must not be null)
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static void displayAnalysis(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         Map<String, Object> analysis = analyzeComponent(component);
@@ -165,14 +165,14 @@ public class SnippetAnalyzer {
      * @param component the snippet component to search (must not be null)
      * @param language the language to search for (must not be null)
      * @return a list of snippets in the specified language
-     * @throws IllegalArgumentException if component or language is null
+     * @throws SnippetException if component or language is null
      */
     public static List<Snippet> findSnippetsByLanguage(SnippetComponent component, String language) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
-        if (language == null) {
-            throw new IllegalArgumentException("Language cannot be null");
+        if (language == null || language.trim().isEmpty()) {
+            throw SnippetException.validationError("Language cannot be null or empty");
         }
         
         return component.getAllSnippets().stream()
@@ -186,14 +186,14 @@ public class SnippetAnalyzer {
      * @param component the snippet component to search (must not be null)
      * @param minLength the minimum code length in characters
      * @return a list of snippets with code longer than the minimum length
-     * @throws IllegalArgumentException if component is null or minLength is negative
+     * @throws SnippetException if component is null or minLength is negative
      */
     public static List<Snippet> getSnippetsWithCodeLongerThan(SnippetComponent component, int minLength) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         if (minLength < 0) {
-            throw new IllegalArgumentException("Minimum length cannot be negative");
+            throw SnippetException.validationError("Minimum length cannot be negative");
         }
         
         return component.getAllSnippets().stream()
@@ -206,11 +206,11 @@ public class SnippetAnalyzer {
      * 
      * @param component the snippet component to analyze (must not be null)
      * @return a map of tag names to usage counts
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static Map<String, Integer> getTagDistribution(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         Map<String, Integer> distribution = new HashMap<>();
@@ -229,15 +229,15 @@ public class SnippetAnalyzer {
      * 
      * @param component the snippet component to search (must not be null)
      * @return a list of snippets that have descriptions
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static List<Snippet> getSnippetsWithDescriptions(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         return component.getAllSnippets().stream()
-                .filter(snippet -> !snippet.getDescription().isEmpty())
+                .filter(snippet -> snippet.getDescription() != null && !snippet.getDescription().isEmpty())
                 .toList();
     }
 
@@ -246,15 +246,15 @@ public class SnippetAnalyzer {
      * 
      * @param component the snippet component to search (must not be null)
      * @return a list of snippets that don't have descriptions
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static List<Snippet> getSnippetsWithoutDescriptions(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         return component.getAllSnippets().stream()
-                .filter(snippet -> snippet.getDescription().isEmpty())
+                .filter(snippet -> snippet.getDescription() == null || snippet.getDescription().isEmpty())
                 .toList();
     }
 
@@ -262,11 +262,11 @@ public class SnippetAnalyzer {
      * Displays enhanced analysis including tag statistics.
      * 
      * @param component the snippet component to analyze (must not be null)
-     * @throws IllegalArgumentException if component is null
+     * @throws SnippetException if component is null
      */
     public static void displayEnhancedAnalysis(SnippetComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         
         Map<String, Object> analysis = analyzeComponent(component);

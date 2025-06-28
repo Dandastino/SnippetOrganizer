@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Collection class for managing groups of code snippets.
+ * Implements the Composite pattern to support both individual snippets and nested collections.
  * 
  * @author Sherif Moustafa
  * @version 1.0
@@ -15,8 +16,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class SnippetCollection implements SnippetComponent {
     
-    /** The list of snippets in this collection */
-    private final List<Snippet> snippets;
+    /** The list of components in this collection (can be snippets or other collections) */
+    private final List<SnippetComponent> components;
     
     /** The name of this collection */
     private String name;
@@ -25,50 +26,87 @@ public class SnippetCollection implements SnippetComponent {
      * Constructs a new SnippetCollection with the specified name.
      * 
      * @param name the name of the collection (must not be null or empty)
-     * @throws IllegalArgumentException if the name is null or empty
+     * @throws SnippetException if the name is null or empty
      */
     public SnippetCollection(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Collection name cannot be null or empty");
+            throw SnippetException.validationError("Collection name cannot be null or empty");
         }
         this.name = name;
-        this.snippets = new ArrayList<>();
+        this.components = new ArrayList<>();
     }
 
     /**
      * Adds a snippet to this collection.
      * 
      * @param snippet the snippet to add (must not be null)
-     * @throws IllegalArgumentException if the snippet is null
+     * @throws SnippetException if the snippet is null
      */
     @Override
     public void addSnippet(Snippet snippet) {
         if (snippet == null) {
-            throw new IllegalArgumentException("Snippet cannot be null");
+            throw SnippetException.validationError("Snippet cannot be null");
         }
-        snippets.add(snippet);
+        components.add(snippet);
+    }
+
+    /**
+     * Adds a snippet component to this collection.
+     * This method supports the Composite pattern by accepting both individual snippets
+     * and other collections.
+     * 
+     * @param component the snippet component to add (must not be null)
+     * @throws SnippetException if the component is null
+     */
+    @Override
+    public void addSnippet(SnippetComponent component) {
+        if (component == null) {
+            throw SnippetException.validationError("Component cannot be null");
+        }
+        components.add(component);
     }
 
     /**
      * Removes a snippet from this collection.
+     * 
      * @param snippet the snippet to remove (must not be null)
-     * @throws IllegalArgumentException if the snippet is null
+     * @throws SnippetException if the snippet is null
      */
     @Override
     public void removeSnippet(Snippet snippet) {
         if (snippet == null) {
-            throw new IllegalArgumentException("Snippet cannot be null");
+            throw SnippetException.validationError("Snippet cannot be null");
         }
-        snippets.remove(snippet);
+        components.remove(snippet);
     }
 
     /**
-     * Returns a list of all snippets in this collection.
-     * @return a new list containing all snippets in this collection
+     * Removes a snippet component from this collection.
+     * 
+     * @param component the snippet component to remove (must not be null)
+     * @throws SnippetException if the component is null
+     */
+    @Override
+    public void removeSnippet(SnippetComponent component) {
+        if (component == null) {
+            throw SnippetException.validationError("Component cannot be null");
+        }
+        components.remove(component);
+    }
+
+    /**
+     * Returns a list of all snippets in this collection and all nested collections.
+     * This method recursively traverses the composite structure.
+     * 
+     * @return a new list containing all snippets in this collection and nested collections
      */
     @Override
     public List<Snippet> getAllSnippets() {
-        return new ArrayList<>(snippets);
+        List<Snippet> allSnippets = new ArrayList<>();
+        for (SnippetComponent component : components) {
+            allSnippets.addAll(component.getAllSnippets());
+        }
+        return allSnippets;
     }
 
     /**
@@ -83,22 +121,28 @@ public class SnippetCollection implements SnippetComponent {
     /**
      * Sets the name of this collection.
      * @param name the new name for the collection (must not be null or empty)
-     * @throws IllegalArgumentException if the name is null or empty
+     * @throws SnippetException if the name is null or empty
      */
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Collection name cannot be null or empty");
+            throw SnippetException.validationError("Collection name cannot be null or empty");
         }
         this.name = name;
     }
 
     /**
-     * Returns the number of snippets in this collection.
-     * @return the number of snippets in the collection
+     * Returns the total number of snippets in this collection and all nested collections.
+     * This method recursively counts snippets in the composite structure.
+     * 
+     * @return the total number of snippets in the collection and nested collections
      */
     @Override
     public int getSnippetCount() {
-        return snippets.size();
+        int totalCount = 0;
+        for (SnippetComponent component : components) {
+            totalCount += component.getSnippetCount();
+        }
+        return totalCount;
     }
 
     /**
@@ -107,27 +151,38 @@ public class SnippetCollection implements SnippetComponent {
      */
     @Override
     public boolean isEmpty() {
-        return snippets.isEmpty();
+        return components.isEmpty();
     }
 
     /**
-     * Displays information about this collection and all its snippets.
+     * Displays information about this collection and all its components.
+     * This method recursively displays the composite structure.
      */
     @JsonIgnore
     @Override
     public void display() {
         System.out.println("Collection: " + name);
+        System.out.println("Total components: " + components.size());
         System.out.println("Total snippets: " + getSnippetCount());
         System.out.println("---------------------------");
         
-        if (snippets.isEmpty()) {
-            System.out.println("No snippets in this collection.");
+        if (components.isEmpty()) {
+            System.out.println("No components in this collection.");
         } else {
-            for (Snippet snippet : snippets) {
-                snippet.display();
+            for (SnippetComponent component : components) {
+                component.display();
                 System.out.println("---------------------------");
             }
         }
+    }
+
+    /**
+     * Gets all components in this collection.
+     * 
+     * @return a list of all components in this collection
+     */
+    public List<SnippetComponent> getComponents() {
+        return new ArrayList<>(components);
     }
 
     /**
@@ -141,7 +196,7 @@ public class SnippetCollection implements SnippetComponent {
     }
 
     /**
-     * Legacy method for backward compatibility.backward compatibility with existing code.</p>
+     * Legacy method for backward compatibility.
      * @return the number of snippets in this collection
      * @deprecated Use {@link #getSnippetCount()} instead
      */

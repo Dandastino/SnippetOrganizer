@@ -1,27 +1,128 @@
 package com.snippetorganizer;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import java.util.Set;
+import java.util.HashSet;
 
 
 /**
  * Test suite for the SnippetFactory class.
- * Tests core functionality including Factory Pattern implementation and validation.
+ * Tests Factory Pattern implementation with enhanced Exception Shielding.
  */
 class SnippetFactoryTest {
 
     @Test
-    void testCreateSnippet_Basic() {
-        Snippet snippet = SnippetFactory.createSnippet(1, "Test Snippet", "Java", "public void test() {}");
+    void testCreateSnippet_ValidParameters() {
+        Snippet snippet = SnippetFactory.createSnippet(1, "Test Snippet", "Java", "public class Test {}");
         
+        assertNotNull(snippet);
         assertEquals(1, snippet.getId());
         assertEquals("Test Snippet", snippet.getTitle());
         assertEquals("Java", snippet.getLanguage());
-        assertEquals("public void test() {}", snippet.getCode());
+        assertEquals("public class Test {}", snippet.getCode());
         assertTrue(snippet.getTags().isEmpty());
-        assertTrue(snippet.getDescription().isEmpty());
+        assertNull(snippet.getDescription());
+    }
+
+    @Test
+    void testCreateSnippet_EmptyCode() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(1, "Test", "Java", "");
+        });
+    }
+
+    @Test
+    void testCreateSnippet_NullCode() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(1, "Test", "Java", null);
+        });
+    }
+
+    @Test
+    void testCreateSnippet_EmptyTitle() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(1, "", "Java", "code");
+        });
+    }
+
+    @Test
+    void testCreateSnippet_NullTitle() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(1, null, "Java", "code");
+        });
+    }
+
+    @Test
+    void testCreateSnippet_EmptyLanguage() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(1, "Test", "", "code");
+        });
+    }
+
+    @Test
+    void testCreateSnippet_NullLanguage() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(1, "Test", null, "code");
+        });
+    }
+
+    @Test
+    void testCreateSnippet_NegativeId() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetFactory.createSnippet(-1, "Test", "Java", "code");
+        });
+    }
+
+    @Test
+    void testCreateSnippetWithTags_ValidParameters() {
+        Set<String> tags = new HashSet<>();
+        tags.add("test");
+        tags.add("java");
+        
+        Snippet snippet = SnippetFactory.createSnippetWithTags(1, "Test Snippet", "Java", "public class Test {}", tags);
+        
+        assertNotNull(snippet);
+        assertEquals(1, snippet.getId());
+        assertEquals("Test Snippet", snippet.getTitle());
+        assertEquals("Java", snippet.getLanguage());
+        assertEquals("public class Test {}", snippet.getCode());
+        assertEquals(tags, snippet.getTags());
+        assertNull(snippet.getDescription());
+    }
+
+    @Test
+    void testCreateSnippetWithDescription_ValidParameters() {
+        Snippet snippet = SnippetFactory.createSnippetWithDescription(1, "Test Snippet", "Java", "public class Test {}", "A test class");
+        
+        assertNotNull(snippet);
+        assertEquals(1, snippet.getId());
+        assertEquals("Test Snippet", snippet.getTitle());
+        assertEquals("Java", snippet.getLanguage());
+        assertEquals("public class Test {}", snippet.getCode());
+        assertEquals("A test class", snippet.getDescription());
+        assertTrue(snippet.getTags().isEmpty());
+    }
+
+    @Test
+    void testCreateSnippet_Complete_ValidParameters() {
+        Set<String> tags = new HashSet<>();
+        tags.add("test");
+        tags.add("java");
+        
+        Snippet snippet = SnippetFactory.createSnippet(1, "Test Snippet", "Java", "public class Test {}", tags, "A test class");
+        
+        assertNotNull(snippet);
+        assertEquals(1, snippet.getId());
+        assertEquals("Test Snippet", snippet.getTitle());
+        assertEquals("Java", snippet.getLanguage());
+        assertEquals("public class Test {}", snippet.getCode());
+        assertEquals(tags, snippet.getTags());
+        assertEquals("A test class", snippet.getDescription());
     }
 
     @Test
@@ -62,48 +163,6 @@ class SnippetFactoryTest {
         assertEquals("Long Code Snippet", snippet.getTitle());
         assertEquals("Java", snippet.getLanguage());
         assertEquals(longCode, snippet.getCode());
-    }
-
-    @Test
-    void testCreateSnippet_EmptyCode() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetFactory.createSnippet(1, "Empty Code", "Java", "")
-        );
-    }
-
-    @Test
-    void testCreateSnippet_NullCode() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetFactory.createSnippet(1, "Null Code", "Java", null)
-        );
-    }
-
-    @Test
-    void testCreateSnippet_EmptyTitle() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetFactory.createSnippet(1, "", "Java", "code")
-        );
-    }
-
-    @Test
-    void testCreateSnippet_NullTitle() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetFactory.createSnippet(1, null, "Java", "code")
-        );
-    }
-
-    @Test
-    void testCreateSnippet_EmptyLanguage() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetFactory.createSnippet(1, "Title", "", "code")
-        );
-    }
-
-    @Test
-    void testCreateSnippet_NullLanguage() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetFactory.createSnippet(1, "Title", null, "code")
-        );
     }
 
     @Test

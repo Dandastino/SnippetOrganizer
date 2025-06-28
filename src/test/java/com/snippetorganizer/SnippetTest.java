@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,6 @@ class SnippetTest {
 
     @BeforeEach
     void setUp() {
-        basicSnippet = javaSnippet(1);
         basicSnippet = TestDataUtil.javaSnippet(1);
         fullSnippet = TestDataUtil.pythonSnippet(2);
     }
@@ -106,7 +106,7 @@ class SnippetTest {
     @Test
     void testSetDescription_Null() {
         basicSnippet.setDescription(null);
-        assertTrue(basicSnippet.getDescription().isEmpty());
+        assertNull(basicSnippet.getDescription());
     }
 
     @Test

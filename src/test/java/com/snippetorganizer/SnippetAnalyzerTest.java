@@ -2,6 +2,7 @@ package com.snippetorganizer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +51,7 @@ class SnippetAnalyzerTest {
     void testAnalyzeComponent() {
         Map<String, Object> analysis = SnippetAnalyzer.analyzeComponent(component);
         
-        assertEquals("Test Collection", analysis.get("name"));
+        assertEquals("Test Collection", analysis.get("componentName"));
         assertEquals(5, analysis.get("totalSnippets"));
         assertEquals(false, analysis.get("isEmpty"));
         
@@ -67,22 +68,21 @@ class SnippetAnalyzerTest {
 
     @Test
     void testAnalyzeComponent_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.analyzeComponent(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.analyzeComponent(null);
+        });
     }
 
     @Test
     void testAnalyzeComponent_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        Map<String, Object> analysis = SnippetAnalyzer.analyzeComponent(emptyComponent);
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        Map<String, Object> analysis = SnippetAnalyzer.analyzeComponent(emptyCollection);
         
-        assertEquals("Empty", analysis.get("name"));
         assertEquals(0, analysis.get("totalSnippets"));
-        assertEquals(true, analysis.get("isEmpty"));
         assertEquals(0.0, analysis.get("averageCodeLength"));
-        assertEquals("N/A", analysis.get("longestSnippet"));
-        assertEquals("N/A", analysis.get("shortestSnippet"));
+        assertEquals("Empty", analysis.get("componentName"));
+        assertEquals("None", analysis.get("longestSnippet"));
+        assertEquals("None", analysis.get("shortestSnippet"));
     }
 
     @Test
@@ -97,17 +97,17 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetLanguageDistribution_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        Map<String, Integer> distribution = SnippetAnalyzer.getLanguageDistribution(emptyComponent);
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        Map<String, Integer> distribution = SnippetAnalyzer.getLanguageDistribution(emptyCollection);
         
         assertTrue(distribution.isEmpty());
     }
 
     @Test
     void testGetLanguageDistribution_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getLanguageDistribution(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getLanguageDistribution(null);
+        });
     }
 
     @Test
@@ -122,16 +122,16 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetAverageCodeLength_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        double avgLength = SnippetAnalyzer.getAverageCodeLength(emptyComponent);
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        double avgLength = SnippetAnalyzer.getAverageCodeLength(emptyCollection);
         assertEquals(0.0, avgLength);
     }
 
     @Test
     void testGetAverageCodeLength_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getAverageCodeLength(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getAverageCodeLength(null);
+        });
     }
 
     @Test
@@ -142,16 +142,16 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetLongestSnippet_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        Snippet longest = SnippetAnalyzer.getLongestSnippet(emptyComponent);
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        Snippet longest = SnippetAnalyzer.getLongestSnippet(emptyCollection);
         assertNull(longest);
     }
 
     @Test
     void testGetLongestSnippet_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getLongestSnippet(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getLongestSnippet(null);
+        });
     }
 
     @Test
@@ -162,16 +162,16 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetShortestSnippet_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        Snippet shortest = SnippetAnalyzer.getShortestSnippet(emptyComponent);
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        Snippet shortest = SnippetAnalyzer.getShortestSnippet(emptyCollection);
         assertNull(shortest);
     }
 
     @Test
     void testGetShortestSnippet_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getShortestSnippet(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getShortestSnippet(null);
+        });
     }
 
     @Test
@@ -204,16 +204,54 @@ class SnippetAnalyzerTest {
 
     @Test
     void testFindSnippetsByLanguage_NullComponent() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.findSnippetsByLanguage(null, "Java")
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.findSnippetsByLanguage(null, "Java");
+        });
     }
 
     @Test
     void testFindSnippetsByLanguage_NullLanguage() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.findSnippetsByLanguage(component, null)
-        );
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.findSnippetsByLanguage(collection, null);
+        });
+    }
+
+    @Test
+    void testFindSnippetsByLanguage_EmptyLanguage() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.findSnippetsByLanguage(collection, "");
+        });
+    }
+
+    @Test
+    void testFindSnippetsByLanguage_NoMatches() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet = SnippetFactory.createSnippet(1, "Java Code", "Java", "public class Test {}", Set.of("java"), "Java code");
+        collection.addSnippet(snippet);
+        
+        List<Snippet> matches = SnippetAnalyzer.findSnippetsByLanguage(collection, "Python");
+        
+        assertTrue(matches.isEmpty());
+    }
+
+    @Test
+    void testFindSnippetsByLanguage_WithMatches() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Java Code 1", "Java", "public class Test1 {}", Set.of("java"), "Java code 1");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Python Code", "Python", "def test(): pass", Set.of("python"), "Python code");
+        Snippet snippet3 = SnippetFactory.createSnippet(3, "Java Code 2", "Java", "public class Test2 {}", Set.of("java"), "Java code 2");
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        collection.addSnippet(snippet3);
+        
+        List<Snippet> matches = SnippetAnalyzer.findSnippetsByLanguage(collection, "Java");
+        
+        assertEquals(2, matches.size());
+        assertTrue(matches.contains(snippet1));
+        assertTrue(matches.contains(snippet3));
     }
 
     @Test
@@ -230,17 +268,36 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetTagDistribution_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        Map<String, Integer> distribution = SnippetAnalyzer.getTagDistribution(emptyComponent);
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        Map<String, Integer> distribution = SnippetAnalyzer.getTagDistribution(emptyCollection);
         
         assertTrue(distribution.isEmpty());
     }
 
     @Test
     void testGetTagDistribution_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getTagDistribution(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getTagDistribution(null);
+        });
+    }
+
+    @Test
+    void testGetTagDistribution_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Java Code", "Java", "public class Test {}", Set.of("java", "oop"), "Java code");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Python Code", "Python", "def test(): pass", Set.of("python", "scripting"), "Python code");
+        Snippet snippet3 = SnippetFactory.createSnippet(3, "Another Java", "Java", "public void test() {}", Set.of("java", "oop"), "More Java");
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        collection.addSnippet(snippet3);
+        
+        Map<String, Integer> distribution = SnippetAnalyzer.getTagDistribution(collection);
+        
+        assertEquals(2, distribution.get("java"));
+        assertEquals(2, distribution.get("oop"));
+        assertEquals(1, distribution.get("python"));
+        assertEquals(1, distribution.get("scripting"));
     }
 
     @Test
@@ -255,9 +312,36 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetSnippetsWithDescriptions_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getSnippetsWithDescriptions(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getSnippetsWithDescriptions(null);
+        });
+    }
+
+    @Test
+    void testGetSnippetsWithDescriptions_Empty() {
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        List<Snippet> snippets = SnippetAnalyzer.getSnippetsWithDescriptions(emptyCollection);
+        
+        assertTrue(snippets.isEmpty());
+    }
+
+    @Test
+    void testGetSnippetsWithDescriptions_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Java Code", "Java", "public class Test {}", Set.of("java"), "Java code");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Python Code", "Python", "def test(): pass", Set.of("python"), "Python code");
+        Snippet snippet3 = SnippetFactory.createSnippet(3, "No Description", "JavaScript", "console.log('test')", Set.of("js"), null);
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        collection.addSnippet(snippet3);
+        
+        List<Snippet> snippets = SnippetAnalyzer.getSnippetsWithDescriptions(collection);
+        
+        assertEquals(2, snippets.size());
+        assertTrue(snippets.contains(snippet1));
+        assertTrue(snippets.contains(snippet2));
+        assertFalse(snippets.contains(snippet3));
     }
 
     @Test
@@ -273,9 +357,36 @@ class SnippetAnalyzerTest {
 
     @Test
     void testGetSnippetsWithoutDescriptions_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.getSnippetsWithoutDescriptions(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.getSnippetsWithoutDescriptions(null);
+        });
+    }
+
+    @Test
+    void testGetSnippetsWithoutDescriptions_Empty() {
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        List<Snippet> snippets = SnippetAnalyzer.getSnippetsWithoutDescriptions(emptyCollection);
+        
+        assertTrue(snippets.isEmpty());
+    }
+
+    @Test
+    void testGetSnippetsWithoutDescriptions_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Java Code", "Java", "public class Test {}", Set.of("java"), "Java code");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Python Code", "Python", "def test(): pass", Set.of("python"), "Python code");
+        Snippet snippet3 = SnippetFactory.createSnippet(3, "No Description", "JavaScript", "console.log('test')", Set.of("js"), null);
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        collection.addSnippet(snippet3);
+        
+        List<Snippet> snippets = SnippetAnalyzer.getSnippetsWithoutDescriptions(collection);
+        
+        assertEquals(1, snippets.size());
+        assertFalse(snippets.contains(snippet1));
+        assertFalse(snippets.contains(snippet2));
+        assertTrue(snippets.contains(snippet3));
     }
 
     @Test
@@ -284,16 +395,29 @@ class SnippetAnalyzerTest {
     }
 
     @Test
-    void testDisplayAnalysis_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        assertDoesNotThrow(() -> SnippetAnalyzer.displayAnalysis(emptyComponent));
+    void testDisplayAnalysis_Null() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.displayAnalysis(null);
+        });
     }
 
     @Test
-    void testDisplayAnalysis_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.displayAnalysis(null)
-        );
+    void testDisplayAnalysis_Empty() {
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        assertDoesNotThrow(() -> SnippetAnalyzer.displayAnalysis(emptyCollection));
+    }
+
+    @Test
+    void testDisplayAnalysis_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Short Code", "Java", "a", Set.of("java"), "Short");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Long Code", "Python", "very long code that exceeds the short one", Set.of("python"), "Long");
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        
+        // Should not throw exception when displaying analysis of collection with snippets
+        assertDoesNotThrow(() -> SnippetAnalyzer.displayAnalysis(collection));
     }
 
     @Test
@@ -302,15 +426,29 @@ class SnippetAnalyzerTest {
     }
 
     @Test
-    void testDisplayEnhancedAnalysis_Empty() {
-        SnippetComponent emptyComponent = new SnippetCollection("Empty");
-        assertDoesNotThrow(() -> SnippetAnalyzer.displayEnhancedAnalysis(emptyComponent));
+    void testDisplayEnhancedAnalysis_Null() {
+        assertThrows(SnippetException.class, () -> {
+            SnippetAnalyzer.displayEnhancedAnalysis(null);
+        });
     }
 
     @Test
-    void testDisplayEnhancedAnalysis_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            SnippetAnalyzer.displayEnhancedAnalysis(null)
-        );
+    void testDisplayEnhancedAnalysis_Empty() {
+        SnippetCollection emptyCollection = new SnippetCollection("Empty");
+        // Should not throw exception when displaying enhanced analysis of empty collection
+        assertDoesNotThrow(() -> SnippetAnalyzer.displayEnhancedAnalysis(emptyCollection));
+    }
+
+    @Test
+    void testDisplayEnhancedAnalysis_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Short Code", "Java", "a", Set.of("java"), "Short");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Long Code", "Python", "very long code that exceeds the short one", Set.of("python"), "Long");
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        
+        // Should not throw exception when displaying enhanced analysis of collection with snippets
+        assertDoesNotThrow(() -> SnippetAnalyzer.displayEnhancedAnalysis(collection));
     }
 } 

@@ -1,6 +1,7 @@
 package com.snippetorganizer;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,9 +40,16 @@ class SnippetCollectionTest {
 
     @Test
     void testConstructor_NullName() {
-        assertThrows(IllegalArgumentException.class, () ->
-            new SnippetCollection(null)
-        );
+        assertThrows(SnippetException.class, () -> {
+            new SnippetCollection(null);
+        });
+    }
+
+    @Test
+    void testConstructor_EmptyName() {
+        assertThrows(SnippetException.class, () -> {
+            new SnippetCollection("");
+        });
     }
 
     @Test
@@ -58,9 +66,10 @@ class SnippetCollectionTest {
 
     @Test
     void testAddSnippet_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            collection.addSnippet(null)
-        );
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertThrows(SnippetException.class, () -> {
+            collection.addSnippet((Snippet) null);
+        });
     }
 
     @Test
@@ -92,9 +101,33 @@ class SnippetCollectionTest {
 
     @Test
     void testRemoveSnippet_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            collection.removeSnippet(null)
-        );
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertThrows(SnippetException.class, () -> {
+            collection.removeSnippet((Snippet) null);
+        });
+    }
+
+    @Test
+    void testRemoveSnippet_Valid() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet = SnippetFactory.createSnippet(1, "Test Snippet", "Java", "public class Test {}");
+        
+        collection.addSnippet(snippet);
+        assertEquals(1, collection.getSnippetCount());
+        
+        collection.removeSnippet(snippet);
+        assertEquals(0, collection.getSnippetCount());
+        assertTrue(collection.isEmpty());
+    }
+
+    @Test
+    void testRemoveSnippet_NotInCollection() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet = SnippetFactory.createSnippet(1, "Test Snippet", "Java", "public class Test {}");
+        
+        // Should not throw exception when removing non-existent snippet
+        collection.removeSnippet(snippet);
+        assertEquals(0, collection.getSnippetCount());
     }
 
     @Test
@@ -110,9 +143,24 @@ class SnippetCollectionTest {
     }
 
     @Test
-    void testGetAllSnippets_EmptyCollection() {
-        List<Snippet> snippets = collection.getAllSnippets();
-        assertTrue(snippets.isEmpty());
+    void testGetAllSnippets_Empty() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertTrue(collection.getAllSnippets().isEmpty());
+    }
+
+    @Test
+    void testGetAllSnippets_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Test Snippet 1", "Java", "public class Test1 {}");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Test Snippet 2", "Python", "def test(): pass");
+        
+        collection.addSnippet(snippet1);
+        collection.addSnippet(snippet2);
+        
+        var snippets = collection.getAllSnippets();
+        assertEquals(2, snippets.size());
+        assertTrue(snippets.contains(snippet1));
+        assertTrue(snippets.contains(snippet2));
     }
 
     @Test
@@ -128,9 +176,18 @@ class SnippetCollectionTest {
 
     @Test
     void testSetName_Null() {
-        assertThrows(IllegalArgumentException.class, () ->
-            collection.setName(null)
-        );
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertThrows(SnippetException.class, () -> {
+            collection.setName(null);
+        });
+    }
+
+    @Test
+    void testSetName_Empty() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        assertThrows(SnippetException.class, () -> {
+            collection.setName("");
+        });
     }
 
     @Test
@@ -159,33 +216,22 @@ class SnippetCollectionTest {
     }
 
     @Test
-    void testDisplay_EmptyCollection() {
-        assertDoesNotThrow(() -> collection.display());
+    void testDisplay_Empty() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        // Should not throw exception when displaying empty collection
+        collection.display();
     }
 
     @Test
     void testDisplay_WithSnippets() {
+        SnippetCollection collection = new SnippetCollection("Test Collection");
+        Snippet snippet1 = SnippetFactory.createSnippet(1, "Java Class", "Java", "public class Test {}", Set.of("oop", "java"), "A Java class");
+        Snippet snippet2 = SnippetFactory.createSnippet(2, "Python Function", "Python", "def test(): pass", Set.of("scripting", "python"), "A Python function");
+        
         collection.addSnippet(snippet1);
         collection.addSnippet(snippet2);
         
-        assertDoesNotThrow(() -> collection.display());
-    }
-
-    // Legacy method tests
-    @Test
-    void testGetSnippets_Legacy() {
-        collection.addSnippet(snippet1);
-        
-        List<Snippet> snippets = collection.getSnippets();
-        assertEquals(1, snippets.size());
-        assertEquals(snippet1, snippets.get(0));
-    }
-
-    @Test
-    void testSize_Legacy() {
-        assertEquals(0, collection.size());
-        
-        collection.addSnippet(snippet1);
-        assertEquals(1, collection.size());
+        // Should not throw exception when displaying collection with snippets
+        collection.display();
     }
 } 

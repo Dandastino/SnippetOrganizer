@@ -30,14 +30,14 @@ public class SnippetExporter {
      * @param snippets the list of snippets to export (must not be null)
      * @param filename the name of the output file (must not be null or empty)
      * @throws IOException if an I/O error occurs during file writing
-     * @throws IllegalArgumentException if snippets list or filename is null
+     * @throws SnippetException if snippets list or filename is null
      */
     public static void exportToText(List<Snippet> snippets, String filename) throws IOException {
         if (snippets == null) {
-            throw new IllegalArgumentException("Snippets list cannot be null");
+            throw SnippetException.validationError("Snippets list cannot be null");
         }
         if (filename == null || filename.trim().isEmpty()) {
-            throw new IllegalArgumentException("Filename cannot be null or empty");
+            throw SnippetException.validationError("Filename cannot be null or empty");
         }
         
         File dataDir = new File(DATA_DIR);
@@ -68,14 +68,14 @@ public class SnippetExporter {
      * @param component the snippet component to export (must not be null)
      * @param filename the name of the output file (must not be null or empty)
      * @throws IOException if an I/O error occurs during file writing
-     * @throws IllegalArgumentException if component or filename is null
+     * @throws SnippetException if component or filename is null
      */
     public static void exportComponentToText(SnippetComponent component, String filename) throws IOException {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         if (filename == null || filename.trim().isEmpty()) {
-            throw new IllegalArgumentException("Filename cannot be null or empty");
+            throw SnippetException.validationError("Filename cannot be null or empty");
         }
         
         StringBuilder content = new StringBuilder();
@@ -104,14 +104,14 @@ public class SnippetExporter {
      * @param component the snippet component to export (must not be null)
      * @param baseFilename the base filename for the language-specific files (must not be null or empty)
      * @throws IOException if an I/O error occurs during file writing
-     * @throws IllegalArgumentException if component or baseFilename is null
+     * @throws SnippetException if component or baseFilename is null
      */
     public static void exportByLanguage(SnippetComponent component, String baseFilename) throws IOException {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         if (baseFilename == null || baseFilename.trim().isEmpty()) {
-            throw new IllegalArgumentException("Base filename cannot be null or empty");
+            throw SnippetException.validationError("Base filename cannot be null or empty");
         }
         
         Map<String, List<Snippet>> snippetsByLanguage = new HashMap<>();
@@ -140,22 +140,22 @@ public class SnippetExporter {
      * @param component the snippet component to analyze and export (must not be null)
      * @param filename the name of the output file (must not be null or empty)
      * @throws IOException if an I/O error occurs during file writing
-     * @throws IllegalArgumentException if component or filename is null
+     * @throws SnippetException if component or filename is null
      * @see SnippetAnalyzer#analyzeComponent(SnippetComponent)
      */
     public static void exportSummaryReport(SnippetComponent component, String filename) throws IOException {
         if (component == null) {
-            throw new IllegalArgumentException("Component cannot be null");
+            throw SnippetException.validationError("Component cannot be null");
         }
         if (filename == null || filename.trim().isEmpty()) {
-            throw new IllegalArgumentException("Filename cannot be null or empty");
+            throw SnippetException.validationError("Filename cannot be null or empty");
         }
         
         Map<String, Object> analysis = SnippetAnalyzer.analyzeComponent(component);
         
         StringBuilder content = new StringBuilder();
         content.append("=== SNIPPET SUMMARY REPORT ===\n");
-        content.append("Component: ").append(analysis.get("name")).append("\n");
+        content.append("Component: ").append(analysis.get("componentName")).append("\n");
         content.append("Total Snippets: ").append(analysis.get("totalSnippets")).append("\n");
         content.append("Average Code Length: ").append(String.format("%.1f", analysis.get("averageCodeLength"))).append(" characters\n\n");
         

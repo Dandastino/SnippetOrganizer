@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,7 +105,7 @@ class SnippetManagerTest {
         manager.addSnippet("Title1", "Java", "code", new HashSet<>(), null);
 
         Snippet snippet = manager.getAllSnippets().get(0);
-        assertTrue(snippet.getDescription().isEmpty());
+        assertNull(snippet.getDescription());
     }
 
     @Test
