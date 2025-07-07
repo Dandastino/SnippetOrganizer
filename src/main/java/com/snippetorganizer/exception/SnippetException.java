@@ -1,4 +1,4 @@
-package com.snippetorganizer;
+package com.snippetorganizer.exception;
 
 /**
  * Custom exception class for the Snippet Organizer application.

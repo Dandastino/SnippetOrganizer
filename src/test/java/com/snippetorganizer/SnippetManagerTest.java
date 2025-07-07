@@ -16,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.core.SnippetManager;
+import com.snippetorganizer.exception.SnippetException;
+
 /*
  * Test suite for the SnippetManager class.
  * Tests core functionality including adding, editing, deleting snippets,

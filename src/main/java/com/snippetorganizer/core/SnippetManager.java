@@ -1,4 +1,4 @@
-package com.snippetorganizer;
+package com.snippetorganizer.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,12 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.snippetorganizer.composite.SnippetComponent;
+import com.snippetorganizer.composite.SnippetCollection;
+import com.snippetorganizer.exception.SnippetException;
+import com.snippetorganizer.factory.SnippetFactory;
+import com.snippetorganizer.iterator.SnippetIterator;
+import com.snippetorganizer.logging.SnippetLogger;
 
 /**
  * Core management class for the Snippet Organizer application.

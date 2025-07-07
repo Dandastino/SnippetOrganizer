@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import com.snippetorganizer.logging.SnippetLogger;
+
 /**
  * Test suite for the SnippetLogger class.
  * Tests core functionality including logging and error handling.

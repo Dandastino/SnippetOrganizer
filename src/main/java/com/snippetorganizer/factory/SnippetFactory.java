@@ -1,6 +1,8 @@
-package com.snippetorganizer;
+package com.snippetorganizer.factory;
 
 import java.util.Set;
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.exception.SnippetException;
 
 /**
  * Factory class for creating Snippet objects.

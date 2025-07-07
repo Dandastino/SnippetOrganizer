@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.iterator.SnippetIterator;
 import static com.snippetorganizer.TestDataUtil.javaSnippet;
 import static com.snippetorganizer.TestDataUtil.jsSnippet;
 import static com.snippetorganizer.TestDataUtil.pythonSnippet;

@@ -1,9 +1,11 @@
-package com.snippetorganizer;
+package com.snippetorganizer.composite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.exception.SnippetException;
 
 /**
  * Collection class for managing groups of code snippets.

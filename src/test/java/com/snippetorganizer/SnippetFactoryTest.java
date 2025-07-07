@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 import java.util.HashSet;
 
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.factory.SnippetFactory;
+import com.snippetorganizer.exception.SnippetException;
 
 /**
  * Test suite for the SnippetFactory class.

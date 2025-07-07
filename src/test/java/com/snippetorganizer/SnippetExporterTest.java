@@ -13,6 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.export.SnippetExporter;
+import com.snippetorganizer.composite.SnippetComponent;
+import com.snippetorganizer.composite.SnippetCollection;
+import com.snippetorganizer.exception.SnippetException;
+
 /*
  * Test suite for the SnippetExporter class.
  * Tests core functionality including exporting snippets to text files,

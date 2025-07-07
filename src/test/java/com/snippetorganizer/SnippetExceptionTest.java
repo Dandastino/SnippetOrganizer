@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import com.snippetorganizer.exception.SnippetException;
+
 /**
  * Test suite for the SnippetException class.
  * Tests core functionality including Exception Shielding Pattern implementation.

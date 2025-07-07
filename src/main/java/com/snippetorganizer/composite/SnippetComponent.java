@@ -1,6 +1,7 @@
-package com.snippetorganizer;
+package com.snippetorganizer.composite;
 
 import java.util.List;
+import com.snippetorganizer.core.Snippet;
 
 /**
  * SnippetComponent interface for the Composite Pattern implementation.

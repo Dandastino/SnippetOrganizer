@@ -2,6 +2,7 @@ package com.snippetorganizer;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.snippetorganizer.core.Snippet;
 
 public class TestDataUtil {
     public static Set<String> javaTags() {

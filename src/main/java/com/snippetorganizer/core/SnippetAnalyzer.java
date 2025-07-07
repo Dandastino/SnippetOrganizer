@@ -1,8 +1,10 @@
-package com.snippetorganizer;
+package com.snippetorganizer.core;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.snippetorganizer.composite.SnippetComponent;
+import com.snippetorganizer.exception.SnippetException;
 
 /**
  * Analysis utility class for Snippet Organizer data.

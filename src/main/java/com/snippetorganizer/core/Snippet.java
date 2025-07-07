@@ -1,4 +1,4 @@
-package com.snippetorganizer;
+package com.snippetorganizer.core;
 
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +7,8 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.snippetorganizer.composite.SnippetComponent;
+import com.snippetorganizer.exception.SnippetException;
 
 /**
  * Represents a code snippet with comprehensive metadata and functionality.

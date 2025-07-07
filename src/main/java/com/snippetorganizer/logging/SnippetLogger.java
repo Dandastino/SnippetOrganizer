@@ -1,4 +1,4 @@
-package com.snippetorganizer;
+package com.snippetorganizer.logging;
 
 import java.io.File;
 import java.io.IOException;

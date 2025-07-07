@@ -1,4 +1,4 @@
-package com.snippetorganizer;
+package com.snippetorganizer.export;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.composite.SnippetComponent;
+import com.snippetorganizer.core.SnippetAnalyzer;
+import com.snippetorganizer.exception.SnippetException;
+import com.snippetorganizer.logging.SnippetLogger;
 
 /**
  * Export utility class for Snippet Organizer data.
