@@ -2,10 +2,12 @@ package com.snippetorganizer.iterator;
 
 import java.util.Iterator;
 import java.util.List;
+
 import com.snippetorganizer.core.Snippet;
 
 /**
  * Iterator implementation for traversing Snippet collections.
+ * usefull for not exposing the underlying list structure.
  * 
  * @author Sherif Moustafa
  * @version 1.0

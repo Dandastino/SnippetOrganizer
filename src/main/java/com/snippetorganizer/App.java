@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+
 import com.snippetorganizer.core.Snippet;
-import com.snippetorganizer.core.SnippetManager;
 import com.snippetorganizer.core.SnippetAnalyzer;
+import com.snippetorganizer.core.SnippetManager;
 import com.snippetorganizer.export.SnippetExporter;
 
 /**
@@ -14,13 +15,14 @@ import com.snippetorganizer.export.SnippetExporter;
  * 
  * @author Sherif Moustafa
  * @version 1.0
+ * 
  */
 public class App {
     
     /**
      * Main entry point for the Snippet Organizer application.
      * 
-     * @param args command line arguments (not used in this application)
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         int choice = -1;
@@ -44,7 +46,6 @@ public class App {
                     choice = getValidMenuChoice(scanner);
 
                     switch (choice) {
-                        case 0 -> handleExit();
                         case 1 -> handleAddSnippet(scanner, manager);
                         case 2 -> handleSearchSnippets(scanner, manager);
                         case 3 -> handleEditSnippet(scanner, manager);
@@ -81,11 +82,6 @@ public class App {
             scanner.next(); 
             return -1; 
         }
-    }
-
-    /** Handles the application exit. */
-    private static void handleExit() {
-        
     }
 
     /**

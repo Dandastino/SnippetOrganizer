@@ -24,7 +24,11 @@ public class SnippetException extends RuntimeException {
         ErrorType(String displayName) {
             this.displayName = displayName;
         }
-        
+        /**
+         * Gets the display name of the error type.
+         * 
+         * @return the display name of the error type
+         */
         public String getDisplayName() {
             return displayName;
         }

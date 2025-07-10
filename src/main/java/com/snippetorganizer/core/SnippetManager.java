@@ -8,8 +8,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.snippetorganizer.composite.SnippetComponent;
 import com.snippetorganizer.composite.SnippetCollection;
+import com.snippetorganizer.composite.SnippetComponent;
 import com.snippetorganizer.exception.SnippetException;
 import com.snippetorganizer.factory.SnippetFactory;
 import com.snippetorganizer.iterator.SnippetIterator;
@@ -97,7 +97,10 @@ public class SnippetManager {
         snippetComponent.display();
     }
 
-    /** Loads snippets from the JSON file into the snippet component. */
+    /** Loads snippets from the JSON file into the snippet component. 
+     * 
+     * @throws SnippetException if an error occurs during file reading
+    */
     private void loadSnippets() {
         if (file.exists() && file.length() > 0) {
             try {
@@ -356,12 +359,31 @@ public class SnippetManager {
         return snippetComponent.getSnippetCount();
     }
 
+
+
+    /**
+     * Saves the current state of the snippet collection to the JSON file.
+     *
+     * @throws SnippetException if an error occurs during file writing
+     */
+    private void saveSnippets() {
+        try {
+            List<Snippet> allSnippets = snippetComponent.getAllSnippets();
+            objectMapper.writeValue(file, allSnippets);
+        } catch (IOException e) {
+            SnippetLogger.logError("Error saving snippets", e);
+            throw SnippetException.ioError("Failed to save snippets to file", e);
+        }
+    }
+
+
     /**
      * Demonstrates the Composite pattern by creating a nested collection structure.
      * This method shows how the Composite pattern allows treating individual snippets
      * and collections of snippets uniformly.
      * 
      * @return a composite structure containing multiple snippet collections
+     * @throws SnippetException if an error occurs during snippet creation or persistence
      */
     public SnippetComponent createCompositeDemo() {
         // Create the main collection
@@ -412,20 +434,5 @@ public class SnippetManager {
         }
         
         return mainCollection;
-    }
-
-    /**
-     * Saves the current state of the snippet collection to the JSON file.
-     *
-     * @throws SnippetException if an error occurs during file writing
-     */
-    private void saveSnippets() {
-        try {
-            List<Snippet> allSnippets = snippetComponent.getAllSnippets();
-            objectMapper.writeValue(file, allSnippets);
-        } catch (IOException e) {
-            SnippetLogger.logError("Error saving snippets", e);
-            throw SnippetException.ioError("Failed to save snippets to file", e);
-        }
     }
 }

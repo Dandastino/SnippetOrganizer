@@ -4,9 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.snippetorganizer.composite.SnippetCollection;
 import com.snippetorganizer.composite.SnippetComponent;
 import com.snippetorganizer.exception.SnippetException;
 
@@ -35,7 +36,7 @@ public final class Snippet implements SnippetComponent {
      * @param title the title of the snippet (must not be null or empty)
      * @param language the programming language of the snippet (must not be null or empty)
      * @param code the actual code content (must not be null or empty)
-     * @throws IllegalArgumentException if any parameter is invalid
+     * @throws SnippetException if any parameter is invalid
      */
     public Snippet(int id, String title, String language, String code) {
         this.id = id;
@@ -55,7 +56,7 @@ public final class Snippet implements SnippetComponent {
      * @param code the actual code content (must not be null or empty)
      * @param tags the tags for categorization (can be null or empty)
      * @param description the description of the snippet (can be null or empty)
-     * @throws IllegalArgumentException if required parameters are invalid
+     * @throws SnippetException if required parameters are invalid
      */
     // telling Jakson which constructor to use and how to map JSON fields to constructor parameters. for deserializzation
     @JsonCreator
@@ -230,7 +231,7 @@ public final class Snippet implements SnippetComponent {
     }
 
     /**
-     * Gets the name of this component (returns the snippet title).
+     * Gets the name of this component.
      * 
      * @return the title of the snippet
      */
@@ -241,7 +242,7 @@ public final class Snippet implements SnippetComponent {
     }
 
     /**
-     * Gets all snippets in this component (returns a list containing only this snippet).
+     * Gets all snippets in this component.
      * 
      * @return a list containing only this snippet
      */
@@ -276,7 +277,7 @@ public final class Snippet implements SnippetComponent {
     }
 
     /**
-     * Gets the snippet count for this component (always returns 1 for leaf nodes).
+     * Gets the snippet count for this component.
      * 
      * @return always returns 1 for individual snippets
      */
@@ -287,7 +288,7 @@ public final class Snippet implements SnippetComponent {
     }
 
     /**
-     * Checks if this component is empty (always returns false for leaf nodes).
+     * Checks if this component is empty.
      * 
      * @return always returns false for individual snippets
      */

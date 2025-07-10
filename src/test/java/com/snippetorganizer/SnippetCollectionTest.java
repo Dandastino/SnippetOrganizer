@@ -3,7 +3,6 @@ package com.snippetorganizer;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,13 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.snippetorganizer.core.Snippet;
-import com.snippetorganizer.composite.SnippetCollection;
-import com.snippetorganizer.composite.SnippetComponent;
-import com.snippetorganizer.exception.SnippetException;
-import com.snippetorganizer.factory.SnippetFactory;
 import static com.snippetorganizer.TestDataUtil.javaSnippet;
 import static com.snippetorganizer.TestDataUtil.pythonSnippet;
+import com.snippetorganizer.composite.SnippetCollection;
+import com.snippetorganizer.core.Snippet;
+import com.snippetorganizer.exception.SnippetException;
+import com.snippetorganizer.factory.SnippetFactory;
 
 /**
  * Test suite for the SnippetCollection class.

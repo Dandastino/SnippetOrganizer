@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.snippetorganizer.core.Snippet;
+
 import com.snippetorganizer.composite.SnippetComponent;
+import com.snippetorganizer.core.Snippet;
 import com.snippetorganizer.core.SnippetAnalyzer;
 import com.snippetorganizer.exception.SnippetException;
 import com.snippetorganizer.logging.SnippetLogger;
@@ -59,7 +60,7 @@ public class SnippetExporter {
         if (!filePath.isAbsolute()) {
             filePath = Paths.get(DATA_DIR, filename);
         }
-        // Ensure parent directory exists
+
         if (filePath.getParent() != null && !Files.exists(filePath.getParent())) {
             Files.createDirectories(filePath.getParent());
         }
@@ -95,7 +96,7 @@ public class SnippetExporter {
         if (!filePath.isAbsolute()) {
             filePath = Paths.get(DATA_DIR, filename);
         }
-        // Ensure parent directory exists
+
         if (filePath.getParent() != null && !Files.exists(filePath.getParent())) {
             Files.createDirectories(filePath.getParent());
         }
@@ -121,7 +122,6 @@ public class SnippetExporter {
         
         Map<String, List<Snippet>> snippetsByLanguage = new HashMap<>();
         
-        // Group snippets by language
         for (Snippet snippet : component.getAllSnippets()) {
             String language = snippet.getLanguage();
             snippetsByLanguage.computeIfAbsent(language, k -> new ArrayList<>()).add(snippet);
