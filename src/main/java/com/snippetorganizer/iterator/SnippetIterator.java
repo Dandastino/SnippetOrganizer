@@ -6,7 +6,7 @@ import java.util.List;
 import com.snippetorganizer.core.Snippet;
 
 /**
- * Iterator implementation for traversing Snippet collections.
+ * Iterator implementation for traversing Snippet collections. (Behavioral Pattern)
  * usefull for not exposing the underlying list structure.
  * 
  * @author Sherif Moustafa

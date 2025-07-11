@@ -163,9 +163,8 @@ class SnippetLoggerTest {
         
         String content = Files.readString(logPath);
         String[] lines = content.split("\n");
-        
-        // Verify format: [timestamp] message
-        assertTrue(lines[0].matches("\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\] .*"));
+        // Trim the line to remove any trailing \r or whitespace
+        assertTrue(lines[0].trim().matches("\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\] .*"));
     }
 
     @Test

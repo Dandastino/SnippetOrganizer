@@ -4,7 +4,7 @@ import java.util.List;
 import com.snippetorganizer.core.Snippet;
 
 /**
- * SnippetComponent interface for the Composite Pattern implementation.
+ * SnippetComponent interface for the Composite Pattern implementation. (Structural Pattern)
  * Supports both individual snippets and collections of snippets.
  * 
  * @author Sherif Moustafa

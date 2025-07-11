@@ -1,7 +1,7 @@
 package com.snippetorganizer.exception;
 
 /**
- * Custom exception class for the Snippet Organizer application.
+ * Custom exception class for the Snippet Organizer application. (Defensing Design Patterns)
  * Implements the Exception Shielding pattern to provide consistent error handling.
  * 
  * @author Sherif Moustafa
@@ -24,6 +24,7 @@ public class SnippetException extends RuntimeException {
         ErrorType(String displayName) {
             this.displayName = displayName;
         }
+        
         /**
          * Gets the display name of the error type.
          * 

@@ -5,7 +5,7 @@ import com.snippetorganizer.core.Snippet;
 import com.snippetorganizer.exception.SnippetException;
 
 /**
- * Factory class for creating Snippet objects.
+ * Factory class for creating Snippet objects. (Creational Pattern)
  * Implements the Factory pattern to centralize snippet creation logic.
  * 
  * @author Sherif Moustafa
