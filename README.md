@@ -1,4 +1,4 @@
-# SNIPPET ORGANIZER 
+# Snippet Organizer 
 
 ## Project Objective
 
@@ -610,5 +610,6 @@ SnippetOrganizer/
 └── README.md                      
 
 ```
+
 
 
