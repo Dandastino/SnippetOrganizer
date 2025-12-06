@@ -1,18 +1,14 @@
 # Snippet Organizer 
 
-## Project Objective
-
 Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database.
 
-### Technology and tools
+## Technology, tools and Design Patterns
 ![Java](https://img.shields.io/badge/Language-Java%2021-007396?logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Build%20Tool-Maven-C71A36?logo=apache-maven&logoColor=white)
 ![Jackson](https://img.shields.io/badge/Data%20Handling-Jackson%20JSON-3776AB?logo=json&logoColor=white)
 ![JUnit 5](https://img.shields.io/badge/Testing-JUnit%205-25A4D0?logo=junit5&logoColor=white)
 ![CLI](https://img.shields.io/badge/Interface-Command%20Line%20(CLI)-000000?logo=visualstudiocode&logoColor=white)
 ![File Storage](https://img.shields.io/badge/Storage-File--based%20(JSON)-222222?logo=json&logoColor=white)
-
-### Design Patterns
 ![Composite](https://img.shields.io/badge/Pattern-Composite-006064?logo=designpatterns&logoColor=white)
 ![Factory](https://img.shields.io/badge/Pattern-Factory-006064?logo=designpatterns&logoColor=white)
 ![Iterator](https://img.shields.io/badge/Pattern-Iterator-006064?logo=designpatterns&logoColor=white)
@@ -610,6 +606,7 @@ SnippetOrganizer/
 └── README.md                      
 
 ```
+
 
 
 
