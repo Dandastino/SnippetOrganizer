@@ -14,6 +14,8 @@ Java application that allows users to save, organize, and search code snippets o
 ![Iterator](https://img.shields.io/badge/Pattern-Iterator-006064?logo=designpatterns&logoColor=white)
 ![Exception Shielding](https://img.shields.io/badge/Pattern-Exception%20Shielding-006064?logo=designpatterns&logoColor=white)
 
+---
+
 ## Data Directory
 
 All application data is stored in the `data/` directory:
@@ -606,6 +608,7 @@ SnippetOrganizer/
 └── README.md                      
 
 ```
+
 
 
 
