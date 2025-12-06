@@ -161,13 +161,6 @@ All actions are logged to `data/snippet_organizer.log`. Data is always saved in 
 - **Export:** Export all snippets, by language, or as a summary report to text files.
 - **Extensible CLI:** All business logic is decoupled from the CLI, making it easy to extend or adapt to other interfaces.
 
-## Design Patterns Used
-
-- **Composite Pattern:** `SnippetComponent` interface, with `Snippet` (leaf) and `SnippetCollection` (composite) supporting nested collections and uniform treatment.
-- **Factory Pattern:** Enhanced `SnippetFactory` with multiple factory methods for creating snippets with different parameter combinations.
-- **Iterator Pattern:** `SnippetIterator` for traversing snippet collections with proper local instantiation.
-- **Exception Shielding Pattern:** Enhanced `SnippetException` system with categorized error types, providing consistent error handling across the application.
-
 ## Design Pattern Implementations
 
 ### Factory Pattern Enhancement
@@ -201,7 +194,6 @@ The Composite pattern allows treating individual snippets and collections unifor
 - `Snippet` (leaf) implements basic component behavior
 - `SnippetCollection` (composite) can contain both snippets and other collections
 - Recursive methods for counting, displaying, and analyzing components
-
 
 ### Iterator Pattern Enhancement
 
@@ -618,4 +610,5 @@ SnippetOrganizer/
 └── README.md                      
 
 ```
+
 
