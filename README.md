@@ -2,7 +2,6 @@
 
 Java application that allows users to save, organize, and search code snippets offline, in a fast, secure, and structured way, without the need for a database.
 
-## Technology, tools and Design Patterns
 ![Java](https://img.shields.io/badge/Language-Java%2021-007396?logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Build%20Tool-Maven-C71A36?logo=apache-maven&logoColor=white)
 ![Jackson](https://img.shields.io/badge/Data%20Handling-Jackson%20JSON-3776AB?logo=json&logoColor=white)
@@ -608,6 +607,7 @@ SnippetOrganizer/
 └── README.md                      
 
 ```
+
 
 
 
